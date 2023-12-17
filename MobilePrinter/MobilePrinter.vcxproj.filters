@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\dnssd">
+      <UniqueIdentifier>{73cefde2-337d-49d0-8fd9-071ac5748561}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wsd">
+      <UniqueIdentifier>{dbfd6256-4050-45d0-9bf8-ff52a68b4d9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dnssd">
+      <UniqueIdentifier>{e56d36af-54ac-436e-9445-ecd1386bfc5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\wsd">
+      <UniqueIdentifier>{709692f8-6cdd-4688-ac63-44e01fb6e618}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ipp">
+      <UniqueIdentifier>{cb0bb541-7898-4d01-9fbd-3991dd8a017c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ipp">
+      <UniqueIdentifier>{1664c15c-a1f9-47b9-86b9-bec7221b2e97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\wsd\src_host">
+      <UniqueIdentifier>{220ba543-ddb7-4e61-b4de-537d6bc08183}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\wsd\src_host">
+      <UniqueIdentifier>{3a4338be-e35a-4cf3-afe8-3848a0a337ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ipp\csv">
+      <UniqueIdentifier>{dee50b3a-46b3-47d0-b36c-4008ddd9d8f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utils">
+      <UniqueIdentifier>{44b46b5f-384a-46d6-976a-af7814566dda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{197cdcef-b9c9-4baa-91ee-282830c6b053}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrinterInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrinterInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dnssd\DnssdPrinterService.h">
+      <Filter>Header Files\dnssd</Filter>
+    </ClInclude>
+    <ClInclude Include="dnssd\DnssdService.h">
+      <Filter>Header Files\dnssd</Filter>
+    </ClInclude>
+    <ClInclude Include="wsd\WSDPrinterInfo.h">
+      <Filter>Header Files\wsd</Filter>
+    </ClInclude>
+    <ClInclude Include="wsd\WSDPrinterService.h">
+      <Filter>Header Files\wsd</Filter>
+    </ClInclude>
+    <ClInclude Include="wsd\WSDUtils.h">
+      <Filter>Header Files\wsd</Filter>
+    </ClInclude>
+    <ClInclude Include="wsd\src_host\MyPrinterProxy.h">
+      <Filter>Header Files\wsd\src_host</Filter>
+    </ClInclude>
+    <ClInclude Include="wsd\src_host\MyPrinterTypes.h">
+      <Filter>Header Files\wsd\src_host</Filter>
+    </ClInclude>
+    <ClInclude Include="wsd\WSDAttachments.h">
+      <Filter>Header Files\wsd</Filter>
+    </ClInclude>
+    <ClInclude Include="PrinterService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ipp\IppPrinterService.h">
+      <Filter>Header Files\ipp</Filter>
+    </ClInclude>
+    <ClInclude Include="ipp\ipp_server.h">
+      <Filter>Header Files\ipp</Filter>
+    </ClInclude>
+    <ClInclude Include="ipp\ipp_packet.h">
+      <Filter>Header Files\ipp</Filter>
+    </ClInclude>
+    <ClInclude Include="ipp\ipp_variant.h">
+      <Filter>Header Files\ipp</Filter>
+    </ClInclude>
+    <ClInclude Include="ipp\ipp_operations.h">
+      <Filter>Header Files\ipp</Filter>
+    </ClInclude>
+    <ClInclude Include="ipp\ipp_types.h">
+      <Filter>Header Files\ipp</Filter>
+    </ClInclude>
+    <ClInclude Include="PrinterJobs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintDocumentMonitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintDocumentCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintDocumentPdf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ipp\ipp_gen_types_1_1.h">
+      <Filter>Header Files\ipp</Filter>
+    </ClInclude>
+    <ClInclude Include="ipp\ipp_gen_types_2_0.h">
+      <Filter>Header Files\ipp</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ipp\ipp_attributes.h">
+      <Filter>Header Files\ipp</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrinterSourceStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrinterHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\StringUtils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\FileUtils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\LogUtils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\IUnknownUtils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\FirewallUtils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\SSLUtils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\CmdLineUtils.h">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrinterInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrinterInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MobilePrinter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dnssd\DnssdPrinterService.cpp">
+      <Filter>Source Files\dnssd</Filter>
+    </ClCompile>
+    <ClCompile Include="dnssd\DnssdService.cpp">
+      <Filter>Source Files\dnssd</Filter>
+    </ClCompile>
+    <ClCompile Include="wsd\WSDPrinterInfo.cpp">
+      <Filter>Source Files\wsd</Filter>
+    </ClCompile>
+    <ClCompile Include="wsd\WSDPrinterService.cpp">
+      <Filter>Source Files\wsd</Filter>
+    </ClCompile>
+    <ClCompile Include="wsd\src_host\MyPrinterProxy.cpp">
+      <Filter>Source Files\wsd\src_host</Filter>
+    </ClCompile>
+    <ClCompile Include="wsd\src_host\MyPrinterStub.cpp">
+      <Filter>Source Files\wsd\src_host</Filter>
+    </ClCompile>
+    <ClCompile Include="wsd\src_host\MyPrinterTypes.cpp">
+      <Filter>Source Files\wsd\src_host</Filter>
+    </ClCompile>
+    <ClCompile Include="wsd\WSDAttachments.cpp">
+      <Filter>Source Files\wsd</Filter>
+    </ClCompile>
+    <ClCompile Include="ipp\IppPrinterService.cpp">
+      <Filter>Source Files\ipp</Filter>
+    </ClCompile>
+    <ClCompile Include="ipp\ipp_server.cpp">
+      <Filter>Source Files\ipp</Filter>
+    </ClCompile>
+    <ClCompile Include="ipp\ipp_packet.cpp">
+      <Filter>Source Files\ipp</Filter>
+    </ClCompile>
+    <ClCompile Include="ipp\ipp_test.cpp">
+      <Filter>Source Files\ipp</Filter>
+    </ClCompile>
+    <ClCompile Include="ipp\ipp_exporter.cpp">
+      <Filter>Source Files\ipp</Filter>
+    </ClCompile>
+    <ClCompile Include="PrinterJobs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintDocumentMonitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintDocumentCommon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintDocumentPdf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ipp\ipp_gen_types_2_0.cpp">
+      <Filter>Source Files\ipp</Filter>
+    </ClCompile>
+    <ClCompile Include="ipp\ipp_gen_types_1_1.cpp">
+      <Filter>Source Files\ipp</Filter>
+    </ClCompile>
+    <ClCompile Include="ipp\ipp_attributes.cpp">
+      <Filter>Source Files\ipp</Filter>
+    </ClCompile>
+    <ClCompile Include="ipp\ipp_variant.cpp">
+      <Filter>Source Files\ipp</Filter>
+    </ClCompile>
+    <ClCompile Include="PrinterSourceStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrinterHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\FileUtils.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\LogUtils.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\StringUtils.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\FirewallUtils.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\SSLUtils.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\CmdLineUtils.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="wsd\src_host\MyPrinter.idl">
+      <Filter>Source Files\wsd\src_host</Filter>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ipp\csv\ipp-my-additional-attributes.csv">
+      <Filter>Header Files\ipp\csv</Filter>
+    </None>
+    <None Include="ipp\csv\ipp-my-additional-keywords.csv">
+      <Filter>Header Files\ipp\csv</Filter>
+    </None>
+    <None Include="ipp\csv\ipp-registrations-1.csv">
+      <Filter>Header Files\ipp\csv</Filter>
+    </None>
+    <None Include="ipp\csv\ipp-registrations-2.csv">
+      <Filter>Header Files\ipp\csv</Filter>
+    </None>
+    <None Include="ipp\csv\ipp-registrations-4.csv">
+      <Filter>Header Files\ipp\csv</Filter>
+    </None>
+    <None Include="ipp\csv\ipp-registrations-6.csv">
+      <Filter>Header Files\ipp\csv</Filter>
+    </None>
+    <None Include="ipp\csv\ipp-registrations-7.csv">
+      <Filter>Header Files\ipp\csv</Filter>
+    </None>
+    <None Include="ipp\csv\ipp-registrations-8.csv">
+      <Filter>Header Files\ipp\csv</Filter>
+    </None>
+    <None Include="ipp\csv\ipp-registrations-9.csv">
+      <Filter>Header Files\ipp\csv</Filter>
+    </None>
+    <None Include="ipp\csv\ipp-registrations-10.csv">
+      <Filter>Header Files\ipp\csv</Filter>
+    </None>
+    <None Include="ipp\csv\ipp-registrations-11.csv">
+      <Filter>Header Files\ipp\csv</Filter>
+    </None>
+    <None Include="ipp\csv\ipp-my-additional-enums.csv">
+      <Filter>Header Files\ipp\csv</Filter>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MobilePrinter.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://schemas.microsoft.com/windows/2014/04/wdp/printV20"
+           xmlns:wprt="http://schemas.microsoft.com/windows/2006/08/wdp/print"
+           xmlns:wprt20="http://schemas.microsoft.com/windows/2014/04/wdp/printV20"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+  <xs:annotation>
+    <xs:documentation>
+      WS-Print Extensions for to support Mobile device services
+      Copyright Microsoft Corp. All rights reserved
+    </xs:documentation>
+  </xs:annotation>
+
+
+  <xs:import namespace="http://schemas.microsoft.com/windows/2006/08/wdp/print" schemaLocation="WDPPrint.xsd" />
+  <xs:annotation>
+    <xs:documentation> A Boolean element that denotes support for WS-Print V2.0 extensions</xs:documentation>
+  </xs:annotation>
+  <xs:element name="SupportsWSPrintV20" type="xs:boolean"/>
+
+  <xs:annotation>
+    <xs:documentation>A boolean element which denotes that the element described should not be cached by the client, as the value changes frequently. </xs:documentation>
+  </xs:annotation>
+  <xs:attribute name="Volatile" type="xs:boolean"/>
+  
+  <xs:complexType name="PrinterFormatsType">
+    <xs:sequence>
+      <xs:element name="PrintDeviceCapabilitiesFormats" type="wprt:ValueTokenListType"></xs:element>
+      <xs:element name="PrintJobTicketFormats" type="wprt:ValueTokenListType"></xs:element>
+      <xs:element name="PrintDeviceResourceFormats" type="wprt:ValueTokenListType"></xs:element>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PrinterFormats" type="wprt20:PrinterFormatsType"></xs:element>
+
+  <xs:complexType name="GetPrintDeviceCapabilitiesRequestType">
+    <xs:sequence>
+      <xs:element name="PrintDeviceCapabilitiesFormat" type="xs:string"/>
+      <xs:element name="PrintDeviceCapabilitiesChangeID" type="xs:string"/>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GetPrintDeviceCapabilitiesRequest" type="wprt20:GetPrintDeviceCapabilitiesRequestType"/>
+
+  <xs:complexType name="GetPrintDeviceCapabilitiesResponseType">
+    <xs:sequence>
+      <xs:element name="PrintDeviceCapabilities" type="wprt20:PrintDeviceCapabilitiesType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GetPrintDeviceCapabilitiesResponse" type="wprt20:GetPrintDeviceCapabilitiesResponseType"/>
+
+
+  <xs:complexType name="PrintDeviceCapabilitiesType">
+    <xs:sequence>
+      <xs:element name="DeviceCapabilitiesData" type="wprt20:DeviceCapabilitiesDataType" />
+    </xs:sequence>
+    <xs:anyAttribute namespace="##other" processContents="lax"/>
+  </xs:complexType>
+
+  <xs:complexType name="DeviceCapabilitiesDataType">
+    <xs:simpleContent>
+      <xs:extension base="xs:base64Binary">
+        <xs:anyAttribute namespace="##other" processContents="lax"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:annotation>
+    <xs:documentation>
+      This element can be included as part of the PrinterConfiguration elements and allows the device to
+    express when the PrintDeviceCapabilities of the device have changed in an event. 
+    </xs:documentation>
+  </xs:annotation>
+  <xs:element name="PrintDeviceCapabilitiesChangeID" type="xs:string"/>
+
+  <xs:complexType name="GetPrintDeviceResourcesRequestType">
+    <xs:sequence>
+      <xs:element name="ResourceLanguage" type="xs:string"/>
+      <xs:element name="ResourceFormat" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GetPrintDeviceResourcesRequest" type="wprt20:GetPrintDeviceResourcesRequestType"/>
+
+  <xs:complexType name="GetPrintDeviceResourcesResponseType">
+    <xs:sequence>
+      <xs:element name="PrintDeviceResources" type="wprt20:PrintDeviceResourcesType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GetPrintDeviceResourcesResponse" type="wprt20:GetPrintDeviceResourcesResponseType"/>
+
+  <xs:complexType name="PrintDeviceResourcesType">
+    <xs:sequence>
+      <xs:element name="ResourceLanguage" type="xs:string"/>
+      <xs:element name="Resources" type="wprt20:PrintDeviceResourcesDataType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PrintDeviceResourcesDataType">
+    <xs:choice>
+      <xs:element name="ResourceURL" type="xs:string"/>
+      <xs:element name="ResourceData" type="xs:base64Binary"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="CreatePrintJob2RequestType">
+    <xs:sequence>
+      <xs:element name="JobDescription2" type="wprt20:JobDescription2Type"></xs:element>
+      <xs:element name="PrintJobTicketContainer" type="wprt20:PrintJobTicketContainerType" minOccurs="0"></xs:element>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"></xs:any>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PrintJobTicketContainerType">
+    <xs:sequence>
+      <xs:element name="PrintJobTicketFormat" type="xs:string"></xs:element>
+      <xs:element name="PrintJobTicketContent" type="xs:base64Binary"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CreatePrintJob2Request" type="wprt20:CreatePrintJob2RequestType"></xs:element>
+  <xs:element name="CreatePrintJob2Response" type="wprt:CreatePrintJobResponseType"/>
+
+  <xs:complexType name="JobDescription2Type">
+    <xs:sequence>
+      <xs:element name="JobName" type="wprt:JobNameType"/>
+      <xs:element name="JobOriginatingUserName" type="wprt:JobOriginatingUserNameType"/>
+      <xs:element name="JobOriginatingUserIdentityEntries" type="wprt20:UserIdentityEntriesType" minOccurs="0"/>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:anyAttribute namespace="##other" processContents="lax"/>
+  </xs:complexType>
+
+  <xs:complexType name="UserIdentityEntriesType">
+    <xs:sequence>
+      <xs:element name="UserIdentityEntry" type="wprt20:UserIdentityEntryType" maxOccurs="unbounded"></xs:element>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"></xs:any>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="UserIdentityEntryType">
+    <xs:sequence>
+      <xs:element name="UserIdentityProvider" type="xs:string"></xs:element>
+      <xs:element name="UserIdentity" type="xs:string"></xs:element>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"></xs:any>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PrepareToPrintRequestType">
+    <xs:sequence>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PrepareToPrintRequest" type="wprt20:PrepareToPrintRequestType"/>
+
+  <xs:complexType name="GetBidiSchemaExtensionsRequestType">
+    <xs:sequence>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GetBidiSchemaExtensionsRequest" type="wprt20:GetBidiSchemaExtensionsRequestType"/>
+
+  <xs:complexType name="GetBidiSchemaExtensionsResponseType">
+    <xs:sequence>
+      <xs:element name="BidiSchemaExtensionsData" type="xs:base64Binary"></xs:element>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"></xs:any>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GetBidiSchemaExtensionsResponse" type="wprt20:GetBidiSchemaExtensionsResponseType"/>
+
+</xs:schema>
+

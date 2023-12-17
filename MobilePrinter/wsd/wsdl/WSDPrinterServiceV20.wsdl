@@ -1,0 +1,186 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+             xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema"
+             xmlns:wsdp="http://schemas.xmlsoap.org/ws/2006/02/devprof"
+             xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+			 xmlns:wse="http://schemas.xmlsoap.org/ws/2004/08/eventing"
+             xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+             xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+             xmlns:wprt="http://schemas.microsoft.com/windows/2006/08/wdp/print"
+             xmlns:wprt20="http://schemas.microsoft.com/windows/2014/04/wdp/printV20"
+             targetNamespace="http://schemas.microsoft.com/windows/2014/04/wdp/printV20"
+             name="WSDPrinterServiceV20">
+
+    <xs:annotation>
+        <xs:documentation>
+            WSD Printer Service V2.0 Extensions Web Service Description (WSDL) file
+            Copyright (c) Microsoft Corporation. All rights reserved
+        </xs:documentation>
+    </xs:annotation>
+
+    <wsp:Policy wsu:Id="ServicePolicy">
+        <wsdp:Profile />
+    </wsp:Policy>
+
+    <types>
+		<xs:schema targetNamespace="http://schemas.microsoft.com/windows/2006/08/wdp/print">
+            <xs:include schemaLocation="WDPPrint.xsd"/>
+        </xs:schema>
+        <xs:schema targetNamespace="http://schemas.microsoft.com/windows/2014/04/wdp/printV20">
+            <xs:include schemaLocation="WDPPrintV20.xsd"/>
+        </xs:schema>
+		<xs:simpleType name="wprt:PrintServiceFaultValuesType" >
+			<xs:restriction base="xs:QName" >
+				<xs:enumeration value="wprt:ClientErrorConflictingRequiredParameters" />
+				<xs:enumeration value="wprt20:NoBidiSchemaExtensions" />
+				<xs:enumeration value="wprt20:UnsupportedClientLanguage" />
+				<xs:enumeration value="wprt20:UnsupportedResourceFormat" />
+				<xs:enumeration value="wprt20:NoLocalizedResources" />
+				<xs:enumeration value="wprt20:UnsupportedPrintDeviceCapabilitiesFormat" />
+				<xs:enumeration value="wprt20:PrintDeviceCapabilitiesUnchanged" />
+			</xs:restriction>
+		</xs:simpleType>
+    </types>
+    <message name="GetPrintDeviceCapabilitiesRequestMsg">
+        <part name="body" element="wprt20:GetPrintDeviceCapabilitiesRequest"/>
+    </message>
+    <message name="GetPrintDeviceCapabilitiesResponseMsg">
+        <part name="body" element="wprt20:GetPrintDeviceCapabilitiesResponse"/>
+    </message>
+
+	<message name="GetPrintDeviceResourcesRequestMsg">
+        <part name="body" element="wprt20:GetPrintDeviceResourcesRequest"/>
+    </message>
+    <message name="GetPrintDeviceResourcesResponseMsg">
+        <part name="body" element="wprt20:GetPrintDeviceResourcesResponse"/>
+    </message>
+	
+	<message name="CreatePrintJob2RequestMsg">
+        <part name="body" element="wprt20:CreatePrintJob2Request"/>
+    </message>
+    <message name="CreatePrintJob2ResponseMsg">
+        <part name="body" element="wprt20:CreatePrintJob2Response"/>
+    </message>
+	
+	<message name="PrepareToPrintRequestMsg">
+        <part name="body" element="wprt20:PrepareToPrintRequest"/>
+    </message>
+
+	
+	<message name="GetBidiSchemaExtensionsRequestMsg">
+        <part name="body" element="wprt20:GetBidiSchemaExtensionsRequest"/>
+    </message>
+    <message name="GetBidiSchemaExtensionsResponseMsg">
+        <part name="body" element="wprt20:GetBidiSchemaExtensionsResponse"/>
+    </message>
+	
+	<message name="PrintDeviceCapabilitiesChangeIDMsg">
+        <part name="body" element="wprt20:PrintDeviceCapabilitiesChangeID"/>
+    </message>
+	
+	
+    <portType name="PrinterServiceV20Type" wse:EventSource="true" >
+        <operation name="GetPrintDeviceCapabilities">
+            <input message="wprt20:GetPrintDeviceCapabilitiesRequestMsg"
+                   wsa:Action="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/GetPrintDeviceCapabilities" />
+            <output message="wprt20:GetPrintDeviceCapabilitiesResponseMsg"
+                   wsa:Action="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/GetPrintDeviceCapabilitiesResponse" />
+        </operation>
+		<operation name="GetPrintDeviceResources">
+            <input message="wprt20:GetPrintDeviceResourcesRequestMsg"
+                   wsa:Action="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/GetPrintDeviceResources" />
+            <output message="wprt20:GetPrintDeviceResourcesResponseMsg"
+                   wsa:Action="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/GetPrintDeviceResourcesResponse" />
+        </operation>
+		<operation name="CreatePrintJob2">
+            <input message="wprt20:CreatePrintJob2RequestMsg"
+                   wsa:Action="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/CreatePrintJob2" />
+            <output message="wprt20:CreatePrintJob2ResponseMsg"
+                   wsa:Action="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/CreatePrintJob2Response" />
+        </operation>
+		<operation name="PrepareToPrint">
+            <input message="wprt20:PrepareToPrintRequestMsg"
+                   wsa:Action="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/PrepareToPrint" />
+        </operation>
+		<operation name="GetBidiSchemaExtensions">
+            <input message="wprt20:GetBidiSchemaExtensionsRequestMsg"
+                   wsa:Action="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/GetBidiSchemaExtensions" />
+            <output message="wprt20:GetBidiSchemaExtensionsResponseMsg"
+                   wsa:Action="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/GetBidiSchemaExtensionsResponse" />
+        </operation>
+		<operation name="PrintDeviceCapabilitiesChangeID">
+            <output message="wprt20:PrintDeviceCapabilitiesChangeIDMsg"
+                   wsa:Action="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/PrintDeviceCapabilitiesChangeID" />
+        </operation>
+    </portType>
+    <binding name="PrinterServiceV20Binding" type="wprt20:PrinterServiceV20Type">
+        <wsoap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsp:PolicyReference URI="#ServicePolicy" />
+        <operation name="GetPrintDeviceCapabilities">
+            <wsoap12:operation
+                soapAction="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/GetPrintDeviceCapabilities"
+                soapActionRequired="true" />
+            <input>
+                <wsoap12:body use="literal" />
+            </input>
+            <output>
+                <wsoap12:body use="literal" />
+            </output>
+        </operation>
+		<operation name="GetPrintDeviceResources">
+            <wsoap12:operation
+                soapAction="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/GetPrintDeviceResources"
+                soapActionRequired="true" />
+            <input>
+                <wsoap12:body use="literal" />
+            </input>
+            <output>
+                <wsoap12:body use="literal" />
+            </output>
+        </operation>
+		<operation name="CreatePrintJob2">
+            <wsoap12:operation
+                soapAction="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/CreatePrintJob2"
+                soapActionRequired="true" />
+            <input>
+                <wsoap12:body use="literal" />
+            </input>
+            <output>
+                <wsoap12:body use="literal" />
+            </output>
+        </operation>
+		<operation name="PrepareToPrint">
+            <wsoap12:operation
+                soapAction="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/PrepareToPrint"
+                soapActionRequired="true" />
+            <input>
+                <wsoap12:body use="literal" />
+            </input>
+        </operation>
+		<operation name="GetBidiSchemaExtensions">
+            <wsoap12:operation
+                soapAction="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/GetBidiSchemaExtensions"
+                soapActionRequired="true" />
+            <input>
+                <wsoap12:body use="literal" />
+            </input>
+            <output>
+                <wsoap12:body use="literal" />
+            </output>
+        </operation>
+		<operation name="PrintDeviceCapabilitiesChangeID">
+            <wsoap12:operation
+                soapAction="http://schemas.microsoft.com/windows/2014/04/wdp/printV20/PrintDeviceCapabilitiesChangeID"
+                soapActionRequired="true" />
+            <output>
+                <wsoap12:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+    <service name="PrinterServiceV20">
+        <port name="PrinterPortV20" binding="wprt20:PrinterServiceV20Binding">
+            <wsoap12:address location="http://localhost/PrinterServiceV20/"/>
+        </port>
+    </service>
+</definitions>

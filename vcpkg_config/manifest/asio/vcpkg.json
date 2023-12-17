@@ -1,0 +1,13 @@
+{
+  "name": "mobileprinter",
+  "version-string": "0.1",
+  "builtin-baseline": "66c39e113a348a6ae80419fae5a629b951b00f1a",
+  "dependencies": [
+    {
+      "name": "cpprestsdk-asio",
+      "default-features": false,
+      "features": [ "windows-asio" ],
+      "version>=": "2.10.18"
+    }
+  ]
+}

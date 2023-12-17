@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29123.88
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MobilePrinter", "MobilePrinter\MobilePrinter.vcxproj", "{2925242C-9519-41DA-B05C-00AA9C61ADFE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		DebugWinHttp|x64 = DebugWinHttp|x64
+		Release|x64 = Release|x64
+		ReleaseWinHttp|x64 = ReleaseWinHttp|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2925242C-9519-41DA-B05C-00AA9C61ADFE}.Debug|x64.ActiveCfg = Debug|x64
+		{2925242C-9519-41DA-B05C-00AA9C61ADFE}.Debug|x64.Build.0 = Debug|x64
+		{2925242C-9519-41DA-B05C-00AA9C61ADFE}.DebugWinHttp|x64.ActiveCfg = DebugWinHttp|x64
+		{2925242C-9519-41DA-B05C-00AA9C61ADFE}.DebugWinHttp|x64.Build.0 = DebugWinHttp|x64
+		{2925242C-9519-41DA-B05C-00AA9C61ADFE}.Release|x64.ActiveCfg = Release|x64
+		{2925242C-9519-41DA-B05C-00AA9C61ADFE}.Release|x64.Build.0 = Release|x64
+		{2925242C-9519-41DA-B05C-00AA9C61ADFE}.ReleaseWinHttp|x64.ActiveCfg = ReleaseWinHttp|x64
+		{2925242C-9519-41DA-B05C-00AA9C61ADFE}.ReleaseWinHttp|x64.Build.0 = ReleaseWinHttp|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FD764991-7BFD-45B7-9B62-59FB357B20D6}
+	EndGlobalSection
+EndGlobal

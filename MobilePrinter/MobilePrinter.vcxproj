@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.Windows.CppWinRT.2.0.210505.3\build\native\Microsoft.Windows.CppWinRT.props" Condition="Exists('..\packages\Microsoft.Windows.CppWinRT.2.0.210505.3\build\native\Microsoft.Windows.CppWinRT.props')" />
+  <Import Project="..\vcpkg_config\scripts\vcpkg.props" />
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugWinHttp|x64">
+      <Configuration>DebugWinHttp</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseWinHttp|x64">
+      <Configuration>ReleaseWinHttp</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{2925242C-9519-41DA-B05C-00AA9C61ADFE}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>MobilePrinter</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>MobilePrinter</ProjectName>
+    <VcpkgEnabled>true</VcpkgEnabled>
+    <VcpkgApplocalDeps>false</VcpkgApplocalDeps>
+    <VcpkgRoot>$(VCPKG_INSTALLATION_ROOT)</VcpkgRoot>
+    <VcpkgRoot Condition="'$(VcpkgRoot)' == ''">$([System.IO.Path]::Combine($(SolutionDir), 'vcpkg'))</VcpkgRoot>
+    <VcpkgPageSchema>$([System.IO.Path]::Combine($(SolutionDir), 'vcpkg_config\scripts\vcpkg-general.xml'))</VcpkgPageSchema>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugWinHttp|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWinHttp|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugWinHttp|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWinHttp|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <CustomBuildBeforeTargets>Midl</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugWinHttp|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <CustomBuildBeforeTargets>Midl</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <CustomBuildBeforeTargets>Midl</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWinHttp|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <CustomBuildBeforeTargets>Midl</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+    <VcpkgManifestInstall>true</VcpkgManifestInstall>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgInstalledDir>$(SolutionDir)vcpkg_installed\asio</VcpkgInstalledDir>
+    <VcpkgManifestRoot>$(SolutionDir)vcpkg_config\manifest\asio</VcpkgManifestRoot>
+    <VcpkgConfiguration>Debug</VcpkgConfiguration>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='DebugWinHttp|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgInstalledDir>$(SolutionDir)vcpkg_installed\winhttp</VcpkgInstalledDir>
+    <VcpkgManifestRoot>$(SolutionDir)vcpkg_config\manifest\winhttp</VcpkgManifestRoot>
+    <VcpkgConfiguration>Debug</VcpkgConfiguration>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgInstalledDir>$(SolutionDir)vcpkg_installed\asio</VcpkgInstalledDir>
+    <VcpkgManifestRoot>$(SolutionDir)vcpkg_config\manifest\asio</VcpkgManifestRoot>
+    <VcpkgConfiguration>Release</VcpkgConfiguration>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='ReleaseWinHttp|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgInstalledDir>$(SolutionDir)vcpkg_installed\winhttp</VcpkgInstalledDir>
+    <VcpkgManifestRoot>$(SolutionDir)vcpkg_config\manifest\winhttp</VcpkgManifestRoot>
+    <VcpkgConfiguration>Release</VcpkgConfiguration>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>CPPREST_FORCE_HTTP_LISTENER_ASIO;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);wsd\src_host;..</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Midl>
+      <AdditionalIncludeDirectories>wsd\src_host</AdditionalIncludeDirectories>
+      <OutputDirectory>wsd\src_host</OutputDirectory>
+    </Midl>
+    <CustomBuildStep>
+      <Outputs>wsd\src_host\MyPrinter_h.h</Outputs>
+      <Command>midl.exe /iid "nul" /env x64 /out"$(ProjectDir)wsd\src_host" /h "MyPrinter_h.h" /W1 /I"wsd\src_host" /char signed /target "NT60" /notlb /nologo /winrt /dlldata "nul" /proxy "nul"  wsd\src_host\MyPrinter.idl</Command>
+    </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>"$(SolutionDir)vcpkg_config\check-vcpkg.bat"</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Check vcpkg installation</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugWinHttp|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);wsd\src_host;..</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+    </Link>
+    <Midl>
+      <AdditionalIncludeDirectories>wsd\src_host</AdditionalIncludeDirectories>
+      <OutputDirectory>wsd\src_host</OutputDirectory>
+    </Midl>
+    <CustomBuildStep>
+      <Outputs>wsd\src_host\MyPrinter_h.h</Outputs>
+      <Command>midl.exe /iid "nul" /env x64 /out"$(ProjectDir)wsd\src_host" /h "MyPrinter_h.h" /W1 /I"wsd\src_host" /char signed /target "NT60" /notlb /nologo /winrt /dlldata "nul" /proxy "nul"  wsd\src_host\MyPrinter.idl</Command>
+    </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>"$(SolutionDir)vcpkg_config\check-vcpkg.bat"</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Check vcpkg installation</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>CPPREST_FORCE_HTTP_LISTENER_ASIO;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);wsd\src_host;..</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Midl>
+      <AdditionalIncludeDirectories>wsd\src_host</AdditionalIncludeDirectories>
+      <OutputDirectory>wsd\src_host</OutputDirectory>
+    </Midl>
+    <CustomBuildStep>
+      <Outputs>wsd\src_host\MyPrinter_h.h</Outputs>
+      <Command>midl.exe /iid "nul" /env x64 /out"$(ProjectDir)wsd\src_host" /h "MyPrinter_h.h" /W1 /I"wsd\src_host" /char signed /target "NT60" /notlb /nologo /winrt /dlldata "nul" /proxy "nul"  wsd\src_host\MyPrinter.idl</Command>
+    </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>"$(SolutionDir)vcpkg_config\check-vcpkg.bat"</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Check vcpkg installation</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWinHttp|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);wsd\src_host;..</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+    </Link>
+    <Midl>
+      <AdditionalIncludeDirectories>wsd\src_host</AdditionalIncludeDirectories>
+      <OutputDirectory>wsd\src_host</OutputDirectory>
+    </Midl>
+    <CustomBuildStep>
+      <Outputs>wsd\src_host\MyPrinter_h.h</Outputs>
+      <Command>midl.exe /iid "nul" /env x64 /out"$(ProjectDir)wsd\src_host" /h "MyPrinter_h.h" /W1 /I"wsd\src_host" /char signed /target "NT60" /notlb /nologo /winrt /dlldata "nul" /proxy "nul"  wsd\src_host\MyPrinter.idl</Command>
+    </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>"$(SolutionDir)vcpkg_config\check-vcpkg.bat"</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Check vcpkg installation</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="ipp\IppPrinterService.h" />
+    <ClInclude Include="ipp\ipp_attributes.h" />
+    <ClInclude Include="ipp\ipp_gen_types_1_1.h" />
+    <ClInclude Include="ipp\ipp_gen_types_2_0.h" />
+    <ClInclude Include="ipp\ipp_operations.h" />
+    <ClInclude Include="ipp\ipp_server.h" />
+    <ClInclude Include="ipp\ipp_packet.h" />
+    <ClInclude Include="ipp\ipp_types.h" />
+    <ClInclude Include="ipp\ipp_variant.h" />
+    <ClInclude Include="PrintDocumentCommon.h" />
+    <ClInclude Include="PrintDocumentPdf.h" />
+    <ClInclude Include="PrinterHelpers.h" />
+    <ClInclude Include="PrinterJobs.h" />
+    <ClInclude Include="PrinterService.h" />
+    <ClInclude Include="PrinterSourceStream.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="utils\CmdLineUtils.h" />
+    <ClInclude Include="utils\FileUtils.h" />
+    <ClInclude Include="utils\FirewallUtils.h" />
+    <ClInclude Include="utils\IUnknownUtils.h" />
+    <ClInclude Include="utils\LogUtils.h" />
+    <ClInclude Include="utils\SSLUtils.h" />
+    <ClInclude Include="utils\StringUtils.h" />
+    <ClInclude Include="wsd\WSDAttachments.h" />
+    <ClInclude Include="CommonUtils.h" />
+    <ClInclude Include="dnssd\DnssdPrinterService.h" />
+    <ClInclude Include="dnssd\DnssdService.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="PrinterInfo.h" />
+    <ClInclude Include="PrinterInterface.h" />
+    <ClInclude Include="wsd\src_host\MyPrinterProxy.h" />
+    <ClInclude Include="wsd\src_host\MyPrinterTypes.h" />
+    <ClInclude Include="wsd\WSDPrinterService.h" />
+    <ClInclude Include="wsd\WSDPrinterInfo.h" />
+    <ClInclude Include="wsd\WSDUtils.h" />
+    <ClInclude Include="PrintDocumentMonitor.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="utils\CmdLineUtils.cpp" />
+    <ClCompile Include="utils\FirewallUtils.cpp" />
+    <ClCompile Include="utils\SSLUtils.cpp" />
+    <ClCompile Include="utils\StringUtils.cpp" />
+    <ClCompile Include="ipp\IppPrinterService.cpp" />
+    <ClCompile Include="ipp\ipp_attributes.cpp" />
+    <ClCompile Include="ipp\ipp_exporter.cpp" />
+    <ClCompile Include="ipp\ipp_gen_types_1_1.cpp" />
+    <ClCompile Include="ipp\ipp_gen_types_2_0.cpp" />
+    <ClCompile Include="ipp\ipp_server.cpp" />
+    <ClCompile Include="ipp\ipp_packet.cpp" />
+    <ClCompile Include="ipp\ipp_test.cpp" />
+    <ClCompile Include="ipp\ipp_variant.cpp" />
+    <ClCompile Include="PrintDocumentCommon.cpp" />
+    <ClCompile Include="PrintDocumentPdf.cpp" />
+    <ClCompile Include="PrinterHelpers.cpp" />
+    <ClCompile Include="PrinterJobs.cpp" />
+    <ClCompile Include="PrinterSourceStream.cpp" />
+    <ClCompile Include="utils\FileUtils.cpp" />
+    <ClCompile Include="utils\LogUtils.cpp" />
+    <ClCompile Include="wsd\WSDAttachments.cpp" />
+    <ClCompile Include="dnssd\DnssdPrinterService.cpp" />
+    <ClCompile Include="dnssd\DnssdService.cpp" />
+    <ClCompile Include="MobilePrinter.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugWinHttp|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseWinHttp|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="PrinterInfo.cpp" />
+    <ClCompile Include="PrinterInterface.cpp" />
+    <ClCompile Include="wsd\src_host\MyPrinterProxy.cpp" />
+    <ClCompile Include="wsd\src_host\MyPrinterStub.cpp" />
+    <ClCompile Include="wsd\src_host\MyPrinterTypes.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='DebugWinHttp|x64'">/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='ReleaseWinHttp|x64'">/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/Zc:strictStrings- %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="wsd\WSDPrinterService.cpp" />
+    <ClCompile Include="wsd\WSDPrinterInfo.cpp" />
+    <ClCompile Include="PrintDocumentMonitor.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="wsd\src_host\MyPrinter.idl">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">wsd\src_host</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='DebugWinHttp|x64'">wsd\src_host</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">wsd\src_host</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='ReleaseWinHttp|x64'">wsd\src_host</AdditionalIncludeDirectories>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugWinHttp|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseWinHttp|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <MetadataFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </MetadataFileName>
+      <MetadataFileName Condition="'$(Configuration)|$(Platform)'=='DebugWinHttp|x64'">
+      </MetadataFileName>
+      <MetadataFileName Condition="'$(Configuration)|$(Platform)'=='ReleaseWinHttp|x64'">
+      </MetadataFileName>
+      <MetadataFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </MetadataFileName>
+      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MyPrinter_h.h</HeaderFileName>
+      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='DebugWinHttp|x64'">MyPrinter_h.h</HeaderFileName>
+      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='ReleaseWinHttp|x64'">MyPrinter_h.h</HeaderFileName>
+      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MyPrinter_h.h</HeaderFileName>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ipp\csv\ipp-my-additional-attributes.csv" />
+    <None Include="ipp\csv\ipp-my-additional-enums.csv" />
+    <None Include="ipp\csv\ipp-my-additional-keywords.csv" />
+    <None Include="ipp\csv\ipp-registrations-1.csv" />
+    <None Include="ipp\csv\ipp-registrations-10.csv" />
+    <None Include="ipp\csv\ipp-registrations-11.csv" />
+    <None Include="ipp\csv\ipp-registrations-2.csv" />
+    <None Include="ipp\csv\ipp-registrations-4.csv" />
+    <None Include="ipp\csv\ipp-registrations-6.csv" />
+    <None Include="ipp\csv\ipp-registrations-7.csv" />
+    <None Include="ipp\csv\ipp-registrations-8.csv" />
+    <None Include="ipp\csv\ipp-registrations-9.csv" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MobilePrinter.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\Microsoft.Windows.CppWinRT.2.0.210505.3\build\native\Microsoft.Windows.CppWinRT.targets" Condition="Exists('..\packages\Microsoft.Windows.CppWinRT.2.0.210505.3\build\native\Microsoft.Windows.CppWinRT.targets')" />
+    <Import Project="..\vcpkg_config\scripts\vcpkg.targets" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Windows.CppWinRT.2.0.210505.3\build\native\Microsoft.Windows.CppWinRT.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Windows.CppWinRT.2.0.210505.3\build\native\Microsoft.Windows.CppWinRT.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Windows.CppWinRT.2.0.210505.3\build\native\Microsoft.Windows.CppWinRT.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Windows.CppWinRT.2.0.210505.3\build\native\Microsoft.Windows.CppWinRT.targets'))" />
+  </Target>
+</Project>

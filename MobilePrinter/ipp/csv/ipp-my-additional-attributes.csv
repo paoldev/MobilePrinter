@@ -1,0 +1,11 @@
+Collection,Name,Member Attribute,Sub-member Attribute,Syntax,Reference
+Printer Description,epcl-version-supported,,,1setOf keyword,[RFC8011]
+Printer Description,marker-colors,,,1setOf name(MAX),[RFC8011]
+Printer Description,marker-names,,,1setOf name(MAX),[RFC8011]
+Printer Description,marker-levels,,,1setOf integer(-3:100),[RFC8011]
+Printer Description,marker-high-levels,,,1setOf integer(0:100),[RFC8011]
+Printer Description,marker-low-levels,,,1setOf integer(0:100),[RFC8011]
+Printer Description,marker-types,,,1setOf keyword,[RFC8011]
+Printer Description,pclm-compression-method-preferred,,,1setOf keyword,[RFC8011]
+Document Template,sheet-collate(obsolete),,,type2 keyword,[PWG5100.5]
+Printer Description,document-format-details-supported(deprecated),,,1setOf keyword,[PWG5100.7]

@@ -1,0 +1,11 @@
+Attribute,Value,Name,Syntax,Reference
+notify-status-code,,,enum,[RFC3395]
+notify-status-code,0x0001,successful-ok-ignored-or-substituted-attributes,enum,[RFC3395]
+notify-status-code,0x0005,successful-ok-too-many-events,enum,[RFC3395]
+notify-status-code,0x040B,client-error-attributes-or-values-not-supported,enum,[RFC3395]
+notify-status-code,0x040C,client-error-uri-scheme-not-supported,enum,[RFC3395]
+notify-status-code,0x0415,client-error-too-many-subscriptions,enum,[RFC3395]
+output-device-document-state,,,type2 enum,[PWG5100.18]
+output-device-document-state,"< any ""document-state"" value >",,type2 enum,[PWG5100.18]
+output-device-job-state,,,type2 enum,[PWG5100.18]
+output-device-job-state,"< any ""job-state"" value >",,type2 enum,[PWG5100.18]
