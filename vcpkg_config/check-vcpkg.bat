@@ -5,7 +5,7 @@ set VCPKG_DIR=%~dp0..\vcpkg
 
 rem This sha1 commit hash MUST match '"builtin-baseline":"hashcode"' in all vcpkg.json manifest files.
 rem To use latest vcpkg version, set VCPKG_COMMIT_ID=latest and remove "builtin-baseline" and "version>=" properties from any vcpkg.json manifest file.
-set VCPKG_COMMIT_ID=66c39e113a348a6ae80419fae5a629b951b00f1a
+set VCPKG_COMMIT_ID=04f7d34c26defd9a54397dcbbb26b1ce3573614d
 
 if "%VCPKG_INSTALLATION_ROOT%" equ "" (
 call :should_install_vcpkg

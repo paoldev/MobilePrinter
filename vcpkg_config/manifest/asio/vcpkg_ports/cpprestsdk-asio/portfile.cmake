@@ -1,10 +1,13 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO paoldev/cpprestsdk
-    REF f8f3c6895c0e52c6ea9ccf0e8ab064cbcc2aeaf2 
-    SHA512 120c03c4d9d106465ba323cec0105291c0f3fc9987a64a386f128433835920212f6e2e4f9b2e6bec7c3924d15b34c6bf9ac47a724f75d430570e94c46e578988
+    REF 9623c54f70454c40eb4901d9cddd3221b67bf59f 
+    SHA512 a45ee95c38c2169dec3b13c131157d49856bce70c4917fae238d9a4abece329cf2405329102518720b90e982a35bdd09b11a3161162ea6bbc22e8d0ea4cd7e29
     HEAD_REF windows-asio-fix
-    PATCHES fix-find-openssl.patch
+    PATCHES 
+        fix-find-openssl.patch
+        fix_narrowing.patch
+        fix-uwp.patch
 )
 
 set(OPTIONS)
@@ -29,9 +32,13 @@ vcpkg_check_features(
       websockets CPPREST_EXCLUDE_WEBSOCKETS
 )
 
-vcpkg_configure_cmake(
-    SOURCE_PATH ${SOURCE_PATH}/Release
-    PREFER_NINJA
+if(VCPKG_TARGET_IS_UWP)
+    set(configure_opts WINDOWS_USE_MSBUILD)
+endif()
+
+vcpkg_cmake_configure(
+    SOURCE_PATH "${SOURCE_PATH}/Release"
+    ${configure_opts}
     OPTIONS
         ${OPTIONS}
         ${FEATURE_OPTIONS}
@@ -44,16 +51,16 @@ vcpkg_configure_cmake(
         -DCPPREST_INSTALL_HEADERS=OFF
 )
 
-vcpkg_install_cmake()
+vcpkg_cmake_install()
 
 vcpkg_copy_pdbs()
 
-vcpkg_fixup_cmake_targets(CONFIG_PATH lib/share/${PORT})
-file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/lib/share ${CURRENT_PACKAGES_DIR}/lib/share)
+vcpkg_cmake_config_fixup(CONFIG_PATH "lib/share/${PORT}")
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/lib/share" "${CURRENT_PACKAGES_DIR}/lib/share")
 
 if (VCPKG_LIBRARY_LINKAGE STREQUAL static)
-    vcpkg_replace_string(${CURRENT_PACKAGES_DIR}/include/cpprest/details/cpprest_compat.h
+    vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/include/cpprest/details/cpprest_compat.h"
         "#ifdef _NO_ASYNCRTIMP" "#if 1")
 endif()
 
-file(INSTALL ${SOURCE_PATH}/license.txt DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
+file(INSTALL "${SOURCE_PATH}/license.txt" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)

@@ -2,7 +2,7 @@
   "versions": [
     {
       "path": "$/cpprestsdk-asio",
-      "version-string": "2.10.18",
+      "version-string": "2.10.19",
       "port-version": 0
     }
   ]
