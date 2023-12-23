@@ -1,0 +1,3 @@
+[submodule "vcpkg-custom-overlays"]
+	path = vcpkg-custom-overlays
+	url = https://github.com/paoldev/vcpkg-custom-overlays

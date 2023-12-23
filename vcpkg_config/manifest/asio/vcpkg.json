@@ -4,7 +4,7 @@
   "builtin-baseline": "04f7d34c26defd9a54397dcbbb26b1ce3573614d",
   "dependencies": [
     {
-      "name": "cpprestsdk-asio",
+      "name": "cpprestsdk",
       "default-features": false,
       "features": [ "windows-asio" ],
       "version>=": "2.10.19"
