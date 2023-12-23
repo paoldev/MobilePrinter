@@ -16,6 +16,8 @@ interface IPrinterServiceV12Type;
 interface IPrinterServiceV20Type;
 interface IPrinterServiceV20TypeEventNotify;
 
+interface IWSDDeviceHost;
+
 // </CDATA>
 
 // <LiteralInclude>
@@ -32,10 +34,6 @@ import "wsdattachment.idl";
 
 // <LiteralInclude>
 import "wsdclient.idl";
-// </LiteralInclude>
-
-// <LiteralInclude>
-import "wsdhost.idl";
 // </LiteralInclude>
 
 // <LiteralInclude>
