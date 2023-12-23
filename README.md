@@ -29,7 +29,7 @@ This project implements minimal ipp 1.1 interface, mainly based on documents and
 * https://www.iana.org/assignments/ipp-registrations/ipp-registrations.xhtml
 * https://github.com/istopwg/ippsample
 
-Ipp support is based on cpprestsdk http_listener class (https://github.com/microsoft/cpprestsdk): it can be built against both WinHttp API (but it requires Administrator privileges to run) or against ASIO API based upon my custom minimal boost excerpt (see boost_emul.h and boost_emul.cpp files).
+Ipp support is based on cpprestsdk http_listener class (https://github.com/microsoft/cpprestsdk): it can be built against both WinHttp API (but it requires Administrator privileges to run) or against my custom cpprestsdk ASIO API from vcpkg.
 
 ### Dnssd
 Dnssd support is mainly based on sample found here
@@ -49,17 +49,29 @@ From a command prompt (use Administrator command prompt if you compile the Debug
     MobilePrinter "printer name" [-options]
 
 where options are
-* -(no-)wsprint: enable/disable wsprint service
-* -(no-)ipp: enable/disable ipp service
+* -(no-)wsprint: enable/disable wsprint service.
+* -(no-)ipp: enable/disable ipp service.
+* -(no-)autodetect-unknown-document-format: try to auto-detect document format if unknown (currently, only pdf and xps files).
 * -(no-)ignore-small-xps-elements: some xps can't be printed if they contain very small elements.
 * -(no-)ignore-small-xps-abs-elements: some xps can't be printed if they contain very small elements.
-* -log[debug/verbose/default]: enable different levels of log.
+* -(no-)print-to-raw-printer: directly send the document to the printer queue as raw printer, regardless of the document format.
+* -(no-)manage-ipp-firewall: automatically open and close Firewall inbound private TCP traffic on port 631 for ipp service.
+* -ipp-pool-size=[5,100]: number of threads used by the ipp service (advanced).
+* -log[debug/verbose/default]: enable different log levels.
 
 **NB**: -no-wsprint and -no-ipp can't be declared together (otherwise all printer services will be disabled).
 
 **Default parameters if not specified:**  
 
-    -wsprint -ipp -ignore-small-xps-elements -no-ignore-small-xps-abs-elements -logdefault
+    -wsprint
+    -ipp
+    -autodetect-unknown-document-format
+    -ignore-small-xps-elements
+    -no-ignore-small-xps-abs-elements
+    -no-print-to-raw-printer
+    -no-manage-ipp-firewall
+    -ipp-pool-size=5
+    -logdefault
 
 From your mobile device, you can reference the printer with the following name
 * "\\MYCOMPUTER\MobilePrinter\My Home Printer Name"
