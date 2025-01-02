@@ -6,6 +6,7 @@ ipp_tmp/
 testfiles/
 vcpkg/
 vcpkg_installed/
+vcpkg_my_id.*.txt
 
 # User-specific files
 *.suo
