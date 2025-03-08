@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MobilePrinter", "MobilePrinter\MobilePrinter.vcxproj", "{2925242C-9519-41DA-B05C-00AA9C61ADFE}"
 EndProject
@@ -11,6 +11,33 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		LICENSE = LICENSE
 		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vcpkg_config", "vcpkg_config", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		vcpkg_config\check-vcpkg.bat = vcpkg_config\check-vcpkg.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "manifest", "manifest", "{6378BD3D-7A15-4688-BC85-14E1575504BE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{B750D94C-8E3B-424D-9B67-4EF7ECE61E19}"
+	ProjectSection(SolutionItems) = preProject
+		vcpkg_config\scripts\applocal.ps1 = vcpkg_config\scripts\applocal.ps1
+		vcpkg_config\scripts\vcpkg-general.xml = vcpkg_config\scripts\vcpkg-general.xml
+		vcpkg_config\scripts\vcpkg.props = vcpkg_config\scripts\vcpkg.props
+		vcpkg_config\scripts\vcpkg.targets = vcpkg_config\scripts\vcpkg.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "asio", "asio", "{23E737DD-909D-4E27-91D4-349D47452617}"
+	ProjectSection(SolutionItems) = preProject
+		vcpkg_config\manifest\asio\vcpkg-configuration.json = vcpkg_config\manifest\asio\vcpkg-configuration.json
+		vcpkg_config\manifest\asio\vcpkg.json = vcpkg_config\manifest\asio\vcpkg.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "winhttp", "winhttp", "{9F4D05BE-970B-4723-AC6C-F113AFF96033}"
+	ProjectSection(SolutionItems) = preProject
+		vcpkg_config\manifest\winhttp\vcpkg-configuration.json = vcpkg_config\manifest\winhttp\vcpkg-configuration.json
+		vcpkg_config\manifest\winhttp\vcpkg.json = vcpkg_config\manifest\winhttp\vcpkg.json
 	EndProjectSection
 EndProject
 Global
@@ -32,6 +59,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6378BD3D-7A15-4688-BC85-14E1575504BE} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{B750D94C-8E3B-424D-9B67-4EF7ECE61E19} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{23E737DD-909D-4E27-91D4-349D47452617} = {6378BD3D-7A15-4688-BC85-14E1575504BE}
+		{9F4D05BE-970B-4723-AC6C-F113AFF96033} = {6378BD3D-7A15-4688-BC85-14E1575504BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FD764991-7BFD-45B7-9B62-59FB357B20D6}
