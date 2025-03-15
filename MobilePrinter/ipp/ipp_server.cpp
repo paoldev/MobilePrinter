@@ -5,7 +5,8 @@
 #include "CommonUtils.h"
 #include "PrinterInfo.h"
 #include "PrinterJobs.h"
-#include <cpprest/asyncrt_utils.h>
+
+#include <cpprest/http_listener.h>
 
 #ifndef CPPREST_FORCE_HTTP_LISTENER_ASIO
 #pragma comment(lib, "httpapi.lib")
@@ -49,7 +50,7 @@ namespace ipp
 	};
 }
 
-ipp_server::ipp_server(const web::http::uri& address, const config& i_config, CPrinterInfo* i_PrinterInfo) : http_listener(address, i_config), m_PrinterInfo(i_PrinterInfo)
+ipp_server::ipp_server(const std::string& i_host, const int32_t i_port, const config& i_config, CPrinterInfo* i_PrinterInfo) : m_PrinterInfo(i_PrinterInfo)
 {
 	assert(m_PrinterInfo);
 	m_PrinterInfo->AddRef();
@@ -58,9 +59,37 @@ ipp_server::ipp_server(const web::http::uri& address, const config& i_config, CP
 	assert(m_PrinterJobs);
 	m_PrinterJobs->AddRef();
 
-#ifdef _DEBUG
-	m_bSaveIppDataToFile = i_config.save_ipp_data_to_file();
-#endif
+	m_config = i_config;
+
+	web::http::experimental::listener::http_listener_config cfg;
+	cfg.set_timeout(i_config.get_timeout());
+	cfg.set_backlog(i_config.get_backlog());
+	//cfg.set_ssl_context_callback(i_config.get_ssl_context_callback());
+
+	web::http::uri ippuri = web::uri_builder{}
+		.set_scheme(i_config.is_ssl_enabled() ? _XPLATSTR("https") : _XPLATSTR("http"))
+		.set_host(utility::conversions::to_string_t(i_host))
+		.set_port(i_port)
+		.to_uri();
+	m_uri = utility::conversions::to_utf8string(ippuri.to_string());
+
+	try
+	{
+		m_server = std::make_unique<http_listener>(ippuri, cfg);
+	}
+	catch (...)
+	{
+		m_server.reset();
+	}
+	
+	if (!m_server)
+	{
+		m_uri.clear();
+		m_uri.shrink_to_fit();
+		SAFE_RELEASE(m_PrinterJobs);
+		SAFE_RELEASE(m_PrinterInfo);
+		throw new std::exception();
+	}
 
 	init();
 }
@@ -69,6 +98,22 @@ ipp_server::~ipp_server()
 {
 	SAFE_RELEASE(m_PrinterJobs);
 	SAFE_RELEASE(m_PrinterInfo);
+}
+
+void ipp_server::start_listener()
+{
+	if (m_server)
+	{
+		m_server->open().wait();
+	}
+}
+
+void ipp_server::stop_listener()
+{
+	if (m_server)
+	{
+		m_server->close().wait();
+	}
 }
 
 template<const int OPERATION, typename Func>
@@ -84,11 +129,13 @@ void ipp_server::register_operation(Func i_callback)
 
 void ipp_server::init()
 {
-	support([this](web::http::http_request req) { (void)on_generic_request(req); });
-	support(web::http::methods::GET, [this](web::http::http_request req) { (void)on_get_request(req); });
-	support(web::http::methods::POST, [this](web::http::http_request req) { (void)on_post_request(req); });
-	support(web::http::methods::HEAD, [this](web::http::http_request req) { (void)on_head_request(req); });
-	support(web::http::methods::OPTIONS, [this](web::http::http_request req) { (void)on_options_request(req); });
+	assert(m_server);
+
+	m_server->support([this](web::http::http_request req) { (void)on_generic_request(req); });
+	m_server->support(web::http::methods::GET, [this](web::http::http_request req) { (void)on_get_request(req); });
+	m_server->support(web::http::methods::POST, [this](web::http::http_request req) { (void)on_post_request(req); });
+	m_server->support(web::http::methods::HEAD, [this](web::http::http_request req) { (void)on_head_request(req); });
+	m_server->support(web::http::methods::OPTIONS, [this](web::http::http_request req) { (void)on_options_request(req); });
 
 	register_operation<ipp::operations::Print_Job>(&ipp_server::on_print_job);
 	register_operation<ipp::operations::Validate_Job>(&ipp_server::on_validate_job);
@@ -98,33 +145,33 @@ void ipp_server::init()
 	register_operation<ipp::operations::Get_Job_Attributes>(&ipp_server::on_get_job_attributes);
 }
 
-pplx::task<void> ipp_server::on_generic_request(web::http::http_request req) const
+Concurrency::task<void> ipp_server::on_generic_request(const web::http::http_request& req) const
 {
 	DBGLOG2("%ls\n%ls\n", time_now().c_str(), req.to_string().c_str());
 
 	return req.reply(web::http::status_codes::BadRequest);
 }
 
-pplx::task<void> ipp_server::on_get_request(web::http::http_request req) const
+Concurrency::task<void> ipp_server::on_get_request(const web::http::http_request& req) const
 {
-	return validate_and_process_request(req, [](web::http::http_request req)
+	return validate_and_process_request(req, [](const web::http::http_request& req)
 		{
 			//TODO: web-server
 			return req.reply(web::http::status_codes::NotFound);
 		});
 }
 
-pplx::task<void> ipp_server::on_post_request(web::http::http_request req) const
+Concurrency::task<void> ipp_server::on_post_request(const web::http::http_request& req) const
 {
-	return validate_and_process_request(req, [this](web::http::http_request req)
+	return validate_and_process_request(req, [this](const web::http::http_request& req)
 		{
 			return on_ipp_post_request(req);
 		});
 }
 
-pplx::task<void> ipp_server::on_head_request(web::http::http_request req) const
+Concurrency::task<void> ipp_server::on_head_request(const web::http::http_request& req) const
 {
-	return validate_and_process_request(req, [](web::http::http_request req)
+	return validate_and_process_request(req, [](const web::http::http_request& req)
 		{
 			//web-server support
 			utility::string_t content_type;
@@ -151,15 +198,16 @@ pplx::task<void> ipp_server::on_head_request(web::http::http_request req) const
 		});
 }
 
-pplx::task<void> ipp_server::on_options_request(web::http::http_request req) const
+Concurrency::task<void> ipp_server::on_options_request(const web::http::http_request& req) const
 {
-	return validate_and_process_request(req, [this](web::http::http_request req) 
+	return validate_and_process_request(req, [](const web::http::http_request& req)
 		{
 			return req.reply(web::http::status_codes::OK);
 		});
 }
 
-pplx::task<void> ipp_server::validate_and_process_request(web::http::http_request req, const std::function<pplx::task<void>(web::http::http_request)>& on_valid_request) const
+Concurrency::task<void> ipp_server::validate_and_process_request(const web::http::http_request& req,
+	const std::function<Concurrency::task<void>(const web::http::http_request&)>& on_valid_request) const
 {
 	DBGLOG2("%ls\n%ls\n", time_now().c_str(), req.to_string().c_str());
 
@@ -242,10 +290,10 @@ pplx::task<void> ipp_server::validate_and_process_request(web::http::http_reques
 	return on_valid_request(req);
 }
 
-pplx::task<void> ipp_server::on_ipp_post_request(web::http::http_request req) const
+Concurrency::task<void> ipp_server::on_ipp_post_request(const web::http::http_request& req) const
 {
-	//return req.extract_vector().then([=](const std::vector<unsigned char>& body)	//required to ignore exceptions from extract_vector: if thrown, this lambda is never called.
-	return req.extract_vector().then([=](pplx::task<std::vector<unsigned char>> r_task)	//required to intercept exceptions from extract_vector: this lambda is always called.
+	//return req.extract_vector().then([req, this](const std::vector<unsigned char>& body)	//required to ignore exceptions from extract_vector: if thrown, this lambda is never called.
+	return req.extract_vector().then([req, this](Concurrency::task<std::vector<unsigned char>> r_task)	//required to intercept exceptions from extract_vector: this lambda is always called.
 	{
 		std::vector<unsigned char> body;
 		try
@@ -256,109 +304,146 @@ pplx::task<void> ipp_server::on_ipp_post_request(web::http::http_request req) co
 		{
 		}
 
-		ipp::request ippPacket;
-		if (!ippPacket.parse(body.data(), body.size()))
+		ipp::response response;
+		if (process_ipp_request(body, response))
+		{
+			const std::vector<uint8_t>& content = response.GetData();
+			if (content.empty())
+			{
+				return req.reply(web::http::status_codes::InternalError);
+			}
+			else
+			{
+				return req.reply(web::http::status_codes::OK, concurrency::streams::bytestream::open_istream(content), content.size(), _XPLATSTR("application/ipp"));
+			}
+		}
+		else
 		{
 			return req.reply(web::http::status_codes::BadRequest);
 		}
-
-		ippPacket.set_http_request(req);
-
-#ifdef _DEBUG
-		if (m_bSaveIppDataToFile)
-		{
-			static time_t session_id = time(nullptr);
-			wchar_t wszFileName[MAX_PATH];
-			swprintf_s(wszFileName, L"Ipp_%llx\\Ipp_%llx_%d_%d.bin", uint64_t(session_id), uint64_t(session_id), ippPacket.GetRequestId(), ippPacket.GetOperationId());
-
-			std::filesystem::path FileName = global_config::get().get_output_folder();
-			FileName.append(L"ippdata");
-			FileName.append(wszFileName);
-			SaveFile(FileName.c_str(), body);
-		}
-#endif
-
-		DBGLOG("IPP %d.%d - request %d - operation %d (%s)", ippPacket.GetIppMajor(), ippPacket.GetIppMinor(), ippPacket.GetRequestId(), ippPacket.GetOperationId(), ipp::operations::get_description(ippPacket.GetOperationId()));
-
-		int32_t status_code = ipp::status_codes::successful_ok;
-
-		//See rfc3196 pag.
-#if IPP_SUPPORTS_2_0
-		if ((ippPacket.GetIppMajor() < 1) || (ippPacket.GetIppMajor() > 2))
-#else
-		if (ippPacket.GetIppMajor() != 1)
-#endif
-		{
-			status_code = ipp::status_codes::server_error_version_not_supported;
-		}
-		//else if (ippPacket.GetRequestId() <= 0)	//See rfc3196
-		//{
-		//	status_code = ipp::status_codes::client_error_bad_request;
-		//}
-
-		if (status_code == ipp::status_codes::successful_ok)
-		{
-			//Validate operations before validating attributes (rfc3196)
-			if (m_supported_operations.find(ippPacket.GetOperationId()) == m_supported_operations.end())
-			{
-				status_code = ipp::status_codes::server_error_operation_not_supported;
-			}
-		}
-
-		if (status_code == ipp::status_codes::successful_ok)
-		{
-			//Validate sttributes
-			if (!ippPacket.attributes().size())
-			{
-				status_code = ipp::status_codes::client_error_bad_request;
-			}
-			else if (ippPacket.attributes().find(ipp::tags::operation_attributes_tag) == ippPacket.attributes().end())
-			{
-				status_code = ipp::status_codes::client_error_bad_request;
-			}
-			/*else if (!ippPacked.AreAttributesInOrder())
-			{
-				status_code = ipp::status_codes::client_error_bad_request;
-			}*/
-		}
-
-		using namespace ipp;
-
-		if (status_code != ipp::status_codes::successful_ok)
-		{
-			return send_ipp_error(ippPacket, status_code);
-		}
-
-		switch (ippPacket.GetOperationId())
-		{
-		case operations::Print_Job:
-			return on_operation<operations::Print_Job>(ippPacket);
-			
-		case operations::Validate_Job:
-			return on_operation<operations::Validate_Job>(ippPacket);
-
-		case operations::Get_Printer_Attributes:
-			return on_operation<operations::Get_Printer_Attributes>(ippPacket);
-
-		case operations::Get_Jobs:
-			return on_operation<operations::Get_Jobs>(ippPacket);
-
-		case operations::Cancel_Job:
-			return on_operation<operations::Cancel_Job>(ippPacket);
-
-		case operations::Get_Job_Attributes:
-			return on_operation<operations::Get_Job_Attributes>(ippPacket);
-			
-		default:
-			break;
-		}
-
-		status_code = status_codes::server_error_operation_not_supported;
-		return send_ipp_error(ippPacket, status_code);
 	});
 }
 
-void dump_collection(const ipp::collection& coll)
+bool ipp_server::process_ipp_request(const std::span<const uint8_t>& i_ipp_request, ipp::response& o_ipp_res) const
+{
+	ipp::request ippPacket;
+	if (!ippPacket.parse(i_ipp_request.data(), i_ipp_request.size()))
+	{
+		return false;
+	}
+
+#ifdef _DEBUG
+	if (m_config.save_ipp_data_to_file())
+	{
+		static time_t session_id = time(nullptr);
+		wchar_t wszFileName[MAX_PATH];
+		swprintf_s(wszFileName, L"Ipp_%llx\\Ipp_%llx_%d_%d.bin", uint64_t(session_id), uint64_t(session_id), ippPacket.GetRequestId(), ippPacket.GetOperationId());
+
+		std::filesystem::path FileName = global_config::get().get_output_folder();
+		FileName.append(L"ippdata");
+		FileName.append(wszFileName);
+		SaveFile(FileName.c_str(), i_ipp_request.data(), i_ipp_request.size());
+	}
+#endif
+
+	DBGLOG("IPP %d.%d - request %d - operation %d (%s)", ippPacket.GetIppMajor(), ippPacket.GetIppMinor(), ippPacket.GetRequestId(), ippPacket.GetOperationId(), ipp::operations::get_description(ippPacket.GetOperationId()));
+
+	o_ipp_res = {};
+
+	int32_t status_code = ipp::status_codes::successful_ok;
+
+	//See rfc3196 pag.
+#if IPP_SUPPORTS_2_0
+	if ((ippPacket.GetIppMajor() < 1) || (ippPacket.GetIppMajor() > 2))
+#else
+	if (ippPacket.GetIppMajor() != 1)
+#endif
+	{
+		status_code = ipp::status_codes::server_error_version_not_supported;
+	}
+	//else if (ippPacket.GetRequestId() <= 0)	//See rfc3196
+	//{
+	//	status_code = ipp::status_codes::client_error_bad_request;
+	//}
+
+	if (status_code == ipp::status_codes::successful_ok)
+	{
+		//Validate operations before validating attributes (rfc3196)
+		if (m_supported_operations.find(ippPacket.GetOperationId()) == m_supported_operations.end())
+		{
+			status_code = ipp::status_codes::server_error_operation_not_supported;
+		}
+	}
+
+	if (status_code == ipp::status_codes::successful_ok)
+	{
+		//Validate sttributes
+		if (!ippPacket.attributes().size())
+		{
+			status_code = ipp::status_codes::client_error_bad_request;
+		}
+		else if (ippPacket.attributes().find(ipp::tags::operation_attributes_tag) == ippPacket.attributes().end())
+		{
+			status_code = ipp::status_codes::client_error_bad_request;
+		}
+		/*else if (!ippPacked.AreAttributesInOrder())
+		{
+			status_code = ipp::status_codes::client_error_bad_request;
+		}*/
+	}
+
+	if (status_code == ipp::status_codes::successful_ok)
+	{
+		switch (ippPacket.GetOperationId())
+		{
+		case ipp::operations::Print_Job:
+			on_operation<ipp::operations::Print_Job>(ippPacket, o_ipp_res);
+			break;
+
+		case ipp::operations::Validate_Job:
+			on_operation<ipp::operations::Validate_Job>(ippPacket, o_ipp_res);
+			break;
+
+		case ipp::operations::Get_Printer_Attributes:
+			on_operation<ipp::operations::Get_Printer_Attributes>(ippPacket, o_ipp_res);
+			break;
+
+		case ipp::operations::Get_Jobs:
+			on_operation<ipp::operations::Get_Jobs>(ippPacket, o_ipp_res);
+			break;
+
+		case ipp::operations::Cancel_Job:
+			on_operation<ipp::operations::Cancel_Job>(ippPacket, o_ipp_res);
+			break;
+
+		case ipp::operations::Get_Job_Attributes:
+			on_operation<ipp::operations::Get_Job_Attributes>(ippPacket, o_ipp_res);
+			break;
+
+		default:
+			status_code = ipp::status_codes::server_error_operation_not_supported;
+			break;
+		}
+	}
+	
+	if (status_code != ipp::status_codes::successful_ok)
+	{
+		fill_ipp_error_response(ippPacket, status_code, o_ipp_res);
+	}
+	
+	return true;
+}
+
+void ipp_server::fill_ipp_error_response(const ipp::request& req, const int32_t i_status_code, ipp::response& o_ipp_res) const
+{
+	ipp::ErrorResponse resp;
+	resp.opAttribs.attributes_charset = "utf-8";
+	resp.opAttribs.attributes_natural_language = "en";
+
+	req.build_response(i_status_code, resp, o_ipp_res);
+}
+
+static void dump_collection(const ipp::collection& coll)
 {
 	for (auto it2 = coll.begin(); it2 != coll.end(); it2++)
 	{
@@ -409,25 +494,27 @@ void dump_collection(const ipp::collection& coll)
 }
 
 template<const int OPERATION>
-pplx::task<void> ipp_server::on_operation(const ipp::request& i_ipp_req) const
+void ipp_server::on_operation(const ipp::request& i_ipp_req, ipp::response& o_ipp_res) const
 {
 	typename ipp::operation_traits<OPERATION>::request ippreq;
-	int32_t status_code = i_ipp_req.to_request(ippreq);
+	int32_t status_code = i_ipp_req.to_request_description(ippreq);
 	if (status_code != ipp::status_codes::successful_ok)
 	{
-		return send_ipp_error(i_ipp_req, status_code);
+		fill_ipp_error_response(i_ipp_req, status_code, o_ipp_res);
+		return;
 	}
 
 	auto operation_func_it = m_supported_operations.find(OPERATION);
 	if (operation_func_it == m_supported_operations.end())
 	{
 		status_code = ipp::status_codes::server_error_operation_not_supported;
-		return send_ipp_error(i_ipp_req, status_code);
+		fill_ipp_error_response(i_ipp_req, status_code, o_ipp_res);
+		return;
 	}
 
 	typename ipp::operation_traits<OPERATION>::response ippresp;
 	status_code = operation_func_it->second(&ippreq, &ippresp);
-	return i_ipp_req.reply(status_code, ippresp);
+	i_ipp_req.build_response(status_code, ippresp, o_ipp_res);
 }
 
 int32_t ipp_server::on_print_job(const ipp::PrintJobRequest& req, ipp::PrintJobResponse& resp) const
@@ -523,12 +610,12 @@ int32_t ipp_server::on_get_printer_attributes(const ipp::GetPrinterAttributesReq
 	return status_code;
 }
 
-bool is_my_job_or_not(const ipp::GetJobsRequest::OperationAttributes& opAttribs, const PrinterJob& Job)
+static bool is_my_job_or_not(const ipp::GetJobsRequest::OperationAttributes& opAttribs, const PrinterJob& Job)
 {
 	return (!opAttribs.my_jobs || (Job.GetJobOriginatingUserName().compare(opAttribs.requesting_user_name) == 0));
 }
 
-bool is_requested_job(const ipp::GetJobsRequest::OperationAttributes& opAttribs, const PrinterJob& Job)
+static bool is_requested_job(const ipp::GetJobsRequest::OperationAttributes& opAttribs, const PrinterJob& Job)
 {
 	if (opAttribs.which_jobs.compare(KEYWORD_WhichJobs_Completed) == 0)
 	{
@@ -800,29 +887,30 @@ std::vector<ipp::variant> ipp_server::get_supported_attribute(const ipp::keyword
 		make_and_model = m_PrinterInfo->GetManufacturer();
 		make_and_model += L" ";
 		make_and_model += m_PrinterInfo->GetModel();
-		value.push_back(variant(utility::conversions::to_utf8string(make_and_model)));
+
+		value.push_back(variant(wchar_to_utf8(make_and_model)));
 	}
 	else if (imatch(key, "printer-name"))
 	{
-		value.push_back(variant(utility::conversions::to_utf8string(m_PrinterInfo->GetPrinterName())));
+		value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetPrinterName())));
 	}
 	else if (imatch(key, "printer-uuid"))
 	{
 #if IPP_SUPPORTS_2_0
-		value.push_back(variant(utility::conversions::to_utf8string(m_PrinterInfo->GetURNUUIDAddress())));
+		value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetURNUUIDAddress())));
 #endif
 	}
 	else if (imatch(key, "printer-location"))
 	{
-		value.push_back(variant(utility::conversions::to_utf8string(m_PrinterInfo->GetPrinterLocation())));
+		value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetPrinterLocation())));
 	}
 	else if (imatch(key, "printer-info"))
 	{
-		value.push_back(variant(utility::conversions::to_utf8string(m_PrinterInfo->GetPrinterInfo())));
+		value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetPrinterInfo())));
 	}
 	else if (imatch(key, "printer-icons"))
 	{
-		//std::string icon = utility::conversions::to_utf8string(uri().to_string());
+		//std::string icon = wchar_to_utf8(uri().to_string());
 		//if (!ends_with(icon, "\\") && !ends_with(icon, "/"))
 		//{
 		//	icon += "/";
@@ -832,7 +920,7 @@ std::vector<ipp::variant> ipp_server::get_supported_attribute(const ipp::keyword
 	}
 	else if (imatch(key, "printer-uri-supported"))
 	{
-		value.push_back(variant(utility::conversions::to_utf8string(uri().to_string())));
+		value.push_back(variant(m_uri));
 		//TODO: additional uri
 	}
 	else if (imatch(key, "uri-security-supported"))
@@ -1066,7 +1154,7 @@ std::vector<ipp::variant> ipp_server::get_supported_attribute(const ipp::keyword
 	}
 	else if (imatch(key, "printer-dns-sd-name"))
 	{
-		value.push_back(variant(utility::conversions::to_utf8string(m_PrinterInfo->GetUniquePrinterName())));
+		value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetUniquePrinterName())));
 	}
 	else if (imatch(key, "print-color-mode-supported"))
 	{
@@ -1097,7 +1185,7 @@ std::vector<ipp::variant> ipp_server::get_supported_attribute(const ipp::keyword
 	}
 	else if (imatch(key, "printer-device-id"))
 	{
-		value.push_back(variant(utility::conversions::to_utf8string(m_PrinterInfo->GetCommandSet/*GetDeviceId*/())));
+		value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetCommandSet/*GetDeviceId*/())));
 	}
 	else if (imatch(key, "epcl-version-supported"))
 	{
@@ -1234,13 +1322,4 @@ std::vector<ipp::variant> ipp_server::get_supported_attribute(const ipp::keyword
 	//End "Windows Internet Print Protocol Provider"
 	
 	return value;
-}
-
-pplx::task<void> ipp_server::send_ipp_error(const ipp::request& req, const int32_t i_status_code) const
-{
-	ipp::ErrorResponse resp;
-	resp.opAttribs.attributes_charset = "utf-8";
-	resp.opAttribs.attributes_natural_language = "en";
-
-	return req.reply(i_status_code, resp);
 }

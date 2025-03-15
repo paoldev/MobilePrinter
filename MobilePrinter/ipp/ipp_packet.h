@@ -2,7 +2,6 @@
 
 #include "ipp_variant.h"
 #include "ipp_operations.h"
-#include <cpprest/http_msg.h>
 
 namespace ipp
 {
@@ -413,21 +412,14 @@ namespace ipp
 			SetOperationIdOrStatusCode(i_operation_id);
 		}
 
-		void set_http_request(web::http::http_request i_http_request)
-		{
-			m_http_request = i_http_request;
-		}
+		template<typename RequestDesc>
+		int32_t to_request_description(RequestDesc& o_requestDesc) const;
 
-		template<typename REQUEST>
-		int32_t to_request(REQUEST& o_request) const;
-
-		template<typename RESPONSE>
-		pplx::task<void> reply(const int32_t i_status_code, const RESPONSE& i_response) const;
+		template<typename ResponseDesc>
+		void build_response(const int32_t i_status_code, const ResponseDesc& i_responseDesc, response& o_response) const;
 
 	private:
 
-		pplx::task<void> reply(const int32_t i_status_code, response& i_response) const;
-
-		web::http::http_request m_http_request;
+		void build_response(const int32_t i_status_code, response& o_response) const;
 	};
 }

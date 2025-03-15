@@ -7,6 +7,7 @@
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Networking.Connectivity.h>
 
+constexpr int IPP_PORT = 631;
 constexpr const wchar_t* FIREWALL_RULE_631 = L"MobilePrinter-631";
 
 struct IppConfig
@@ -116,28 +117,32 @@ bool CIppPrinterService::Init(CPrinterInfo* pPrinter)
 #endif
 	}
 
-	web::http::uri ippuri = web::uri_builder{}
-		.set_scheme(s_ippConfig.m_bEnableSSL ? _XPLATSTR("https") : _XPLATSTR("http"))
-		.set_host(hostName.RawName().c_str())
-		//.set_host(_XPLATSTR("localhost"))
-		//.set_host(_XPLATSTR("127.0.0.1"))
-		//.set_host(_XPLATSTR("0.0.0.0"))
-		.set_port(631)
-		.to_uri();
+	std::string ipp_host = wchar_to_utf8(hostName.RawName().c_str());
+	//std::string ipp_host = "localhost";
+	//std::string ipp_host = "127.0.0.1";
+	//std::string ipp_host = "0.0.0.0";
 
 	ipp_server::config cfg;
+	cfg.enable_ssl(s_ippConfig.m_bEnableSSL);
 	//cfg.set_backlog(1);
-
 #ifdef _DEBUG
 	cfg.save_ipp_data_to_file(s_ippConfig.m_bSaveIppDataToFile);
 #endif
 
-	m_ippserver.reset(new ipp_server(ippuri, cfg, pPrinter));
+	try
+	{
+		m_ippserver = std::make_unique<ipp_server>(ipp_host, IPP_PORT, cfg, pPrinter);
+	}
+	catch (...)
+	{
+		Uninit();
+		return false;
+	}
 
 	m_PrinterInfo = pPrinter;
 	m_PrinterInfo->AddRef();
 
-	DBGLOG("%ls", ippuri.to_string().c_str());
+	DBGLOG("%s", m_ippserver.get()->uri().c_str());
 
 	return true;
 }
@@ -161,8 +166,8 @@ void CIppPrinterService::Start()
 {
 	if (m_ippserver)
 	{
-		LOG2("[IPP] Starting %ls ... ", m_ippserver.get()->uri().to_string().c_str());
-		m_ippserver->open().wait();
+		LOG2("[IPP] Starting %s ... ", m_ippserver.get()->uri().c_str());
+		m_ippserver->start_listener();
 		LOG2("done.\n");
 	}
 }
@@ -171,8 +176,8 @@ void CIppPrinterService::Stop()
 {
 	if (m_ippserver)
 	{
-		LOG2("[IPP] Stopping %ls ... ", m_ippserver.get()->uri().to_string().c_str());
-		m_ippserver->close().wait();
+		LOG2("[IPP] Stopping %s ... ", m_ippserver.get()->uri().c_str());
+		m_ippserver->stop_listener();
 		LOG2("done.\n");
 	}
 }

@@ -786,162 +786,160 @@ namespace ipp
 		}
 	}
 
-	template<> pplx::task<void> request::reply(const int32_t i_status_code, const ErrorResponse& i_response) const
+	template<> void request::build_response(const int32_t i_status_code, const ErrorResponse& i_responseDesc, response& o_response) const
 	{
-		response res;
+		o_response = {};
 
-		add_operation_attributes(i_response.opAttribs, res);
-		add_unsupported_attributes(i_status_code, i_response.unsupportedAttribs, res);
+		add_operation_attributes(i_responseDesc.opAttribs, o_response);
+		add_unsupported_attributes(i_status_code, i_responseDesc.unsupportedAttribs, o_response);
 
-		return reply(i_status_code, res);
+		build_response(i_status_code, o_response);
 	}
 
-	template<> pplx::task<void> request::reply(const int32_t i_status_code, const PrintJobResponse& i_response) const
+	template<> void request::build_response(const int32_t i_status_code, const PrintJobResponse& i_responseDesc, response& o_response) const
 	{
-		response res;
+		o_response = {};
 		
-		add_operation_attributes(i_response.opAttribs, res);
-		add_unsupported_attributes(i_status_code, i_response.unsupportedAttribs, res);
+		add_operation_attributes(i_responseDesc.opAttribs, o_response);
+		add_unsupported_attributes(i_status_code, i_responseDesc.unsupportedAttribs, o_response);
 
 		{
-			auto& jobAttribs = i_response.jobAttribs;
-			auto it = res.AddGroup(tags::job_attributes_tag);
-			res.SetAttribute(it, "job-id", jobAttribs.job_id);
-			res.SetAttribute(it, "job-uri", jobAttribs.job_uri);
-			res.SetAttribute(it, "job-state", jobAttribs.job_state);
-			res.SetAttribute(it, "job-state-reasons", jobAttribs.job_state_reasons);
+			auto& jobAttribs = i_responseDesc.jobAttribs;
+			auto it = o_response.AddGroup(tags::job_attributes_tag);
+			o_response.SetAttribute(it, "job-id", jobAttribs.job_id);
+			o_response.SetAttribute(it, "job-uri", jobAttribs.job_uri);
+			o_response.SetAttribute(it, "job-state", jobAttribs.job_state);
+			o_response.SetAttribute(it, "job-state-reasons", jobAttribs.job_state_reasons);
 			if (jobAttribs.job_state_message.size())
 			{
-				res.SetAttribute(it, "job-state-message", jobAttribs.job_state_message);
+				o_response.SetAttribute(it, "job-state-message", jobAttribs.job_state_message);
 			}
 			if (jobAttribs.number_of_intervening_jobs.has_value())
 			{
-				res.SetAttribute(it, "number-of-intervening-jobs", jobAttribs.number_of_intervening_jobs.value());
+				o_response.SetAttribute(it, "number-of-intervening-jobs", jobAttribs.number_of_intervening_jobs.value());
 			}
 		}
 
-		return reply(i_status_code, res);
+		build_response(i_status_code, o_response);
 	}
 
-	template<> pplx::task<void> request::reply(const int32_t i_status_code, const ValidateJobResponse& i_response) const
+	template<> void request::build_response(const int32_t i_status_code, const ValidateJobResponse& i_responseDesc, response& o_response) const
 	{
-		response res;
+		o_response = {};
 
-		add_operation_attributes(i_response.opAttribs, res);
-		add_unsupported_attributes(i_status_code, i_response.unsupportedAttribs, res);
+		add_operation_attributes(i_responseDesc.opAttribs, o_response);
+		add_unsupported_attributes(i_status_code, i_responseDesc.unsupportedAttribs, o_response);
 
-		return reply(i_status_code, res);
+		build_response(i_status_code, o_response);
 	}
 
-	template<> pplx::task<void> request::reply(const int32_t i_status_code, const GetPrinterAttributesResponse& i_response) const
+	template<> void request::build_response(const int32_t i_status_code, const GetPrinterAttributesResponse& i_responseDesc, response& o_response) const
 	{
-		response res;
+		o_response = {};
 
-		add_operation_attributes(i_response.opAttribs, res);
-		add_unsupported_attributes(i_status_code, i_response.unsupportedAttribs, res);
+		add_operation_attributes(i_responseDesc.opAttribs, o_response);
+		add_unsupported_attributes(i_status_code, i_responseDesc.unsupportedAttribs, o_response);
 
 		{
-			auto& printerAttribs = i_response.printerAttributes.attribs;
+			auto& printerAttribs = i_responseDesc.printerAttributes.attribs;
 			if (printerAttribs.size())
 			{
-				auto it = res.AddGroup(tags::printer_attributes_tag);
+				auto it = o_response.AddGroup(tags::printer_attributes_tag);
 				for (auto it2 = printerAttribs.cbegin(); it2 != printerAttribs.cend(); it2++)
 				{
-					res.SetAttribute(it, it2->first, it2->second);
+					o_response.SetAttribute(it, it2->first, it2->second);
 				}
 			}
 		}
 
-		return reply(i_status_code, res);
+		build_response(i_status_code, o_response);
 	}
 
-	template<> pplx::task<void> request::reply(const int32_t i_status_code, const GetJobsResponse& i_response) const
+	template<> void request::build_response(const int32_t i_status_code, const GetJobsResponse& i_responseDesc, response& o_response) const
 	{
-		response res;
+		o_response = {};
 
-		add_operation_attributes(i_response.opAttribs, res);
-		add_unsupported_attributes(i_status_code, i_response.unsupportedAttribs, res);
+		add_operation_attributes(i_responseDesc.opAttribs, o_response);
+		add_unsupported_attributes(i_status_code, i_responseDesc.unsupportedAttribs, o_response);
 
-		for (auto itJ = i_response.jobsAttributes.cbegin(); itJ != i_response.jobsAttributes.cend(); itJ++)
+		for (auto itJ = i_responseDesc.jobsAttributes.cbegin(); itJ != i_responseDesc.jobsAttributes.cend(); itJ++)
 		{
 			auto& jobAttribs = *itJ;
-			auto it = res.AddGroup(tags::job_attributes_tag);
-			res.SetAttribute(it, "job-id", jobAttribs.job_id);
-			res.SetAttribute(it, "job-uri", jobAttribs.job_uri);
-			res.SetAttribute(it, "job-state", jobAttribs.job_state);
-			res.SetAttribute(it, "job-state-reasons", jobAttribs.job_state_reasons);
+			auto it = o_response.AddGroup(tags::job_attributes_tag);
+			o_response.SetAttribute(it, "job-id", jobAttribs.job_id);
+			o_response.SetAttribute(it, "job-uri", jobAttribs.job_uri);
+			o_response.SetAttribute(it, "job-state", jobAttribs.job_state);
+			o_response.SetAttribute(it, "job-state-reasons", jobAttribs.job_state_reasons);
 			if (jobAttribs.job_state_message.size())
 			{
-				res.SetAttribute(it, "job-state-message", jobAttribs.job_state_message);
+				o_response.SetAttribute(it, "job-state-message", jobAttribs.job_state_message);
 			}
-			res.SetAttribute(it, "number-of-intervening-jobs", jobAttribs.number_of_intervening_jobs);
+			o_response.SetAttribute(it, "number-of-intervening-jobs", jobAttribs.number_of_intervening_jobs);
 		}
 
-		return reply(i_status_code, res);
+		build_response(i_status_code, o_response);
 	}
 
-	template<> pplx::task<void> request::reply(const int32_t i_status_code, const CancelJobResponse& i_response) const
+	template<> void request::build_response(const int32_t i_status_code, const CancelJobResponse& i_responseDesc, response& o_response) const
 	{
-		response res;
+		o_response = {};
 
-		add_operation_attributes(i_response.opAttribs, res);
-		add_unsupported_attributes(i_status_code, i_response.unsupportedAttribs, res);
+		add_operation_attributes(i_responseDesc.opAttribs, o_response);
+		add_unsupported_attributes(i_status_code, i_responseDesc.unsupportedAttribs, o_response);
 
-		return reply(i_status_code, res);
+		build_response(i_status_code, o_response);
 	}
 
-	template<> pplx::task<void> request::reply(const int32_t i_status_code, const GetJobAttributesResponse& i_response) const
+	template<> void request::build_response(const int32_t i_status_code, const GetJobAttributesResponse& i_responseDesc, response& o_response) const
 	{
-		response res;
+		o_response = {};
 
-		add_operation_attributes(i_response.opAttribs, res);
-		add_unsupported_attributes(i_status_code, i_response.unsupportedAttribs, res);
+		add_operation_attributes(i_responseDesc.opAttribs, o_response);
+		add_unsupported_attributes(i_status_code, i_responseDesc.unsupportedAttribs, o_response);
 
 		{
-			auto& jobAttribs = i_response.jobAttributes;
-			auto it = res.AddGroup(tags::job_attributes_tag);
-			res.SetAttribute(it, "job-id", jobAttribs.job_id);
-			res.SetAttribute(it, "job-uri", jobAttribs.job_uri);
-			res.SetAttribute(it, "job-state", jobAttribs.job_state);
-			res.SetAttribute(it, "job-state-reasons", jobAttribs.job_state_reasons);
+			auto& jobAttribs = i_responseDesc.jobAttributes;
+			auto it = o_response.AddGroup(tags::job_attributes_tag);
+			o_response.SetAttribute(it, "job-id", jobAttribs.job_id);
+			o_response.SetAttribute(it, "job-uri", jobAttribs.job_uri);
+			o_response.SetAttribute(it, "job-state", jobAttribs.job_state);
+			o_response.SetAttribute(it, "job-state-reasons", jobAttribs.job_state_reasons);
 			if (jobAttribs.job_state_message.size())
 			{
-				res.SetAttribute(it, "job-state-message", jobAttribs.job_state_message);
+				o_response.SetAttribute(it, "job-state-message", jobAttribs.job_state_message);
 			}
-			res.SetAttribute(it, "number-of-intervening-jobs", jobAttribs.number_of_intervening_jobs);
+			o_response.SetAttribute(it, "number-of-intervening-jobs", jobAttribs.number_of_intervening_jobs);
 		}
 
-		return reply(i_status_code, res);
+		build_response(i_status_code, o_response);
 	}
 
-	pplx::task<void> request::reply(const int32_t i_status_code, response& i_response) const
+	void request::build_response(const int32_t i_status_code, response& o_response) const
 	{
 		DBGLOG("id %d - status code %d (%s)", GetRequestId(), i_status_code, status_codes::get_description(i_status_code));
 
-		i_response.SetVersion(GetIppMajor(), GetIppMinor());
+		o_response.SetVersion(GetIppMajor(), GetIppMinor());
 		if (i_status_code == status_codes::server_error_version_not_supported)
 		{
 			// Set the nearest supported version
 			if (GetIppMajor() < 1)
 			{
-				i_response.SetVersion(1, 0);
+				o_response.SetVersion(1, 0);
 			}
 			else
 			{
-				i_response.SetVersion(1, 1);
+				o_response.SetVersion(1, 1);
 			}
 		}
-		i_response.SetRequestId(GetRequestId());
-		i_response.SetStatusCode(i_status_code);
-		//i_response.SetData();
-		i_response.build();
-		const std::vector<uint8_t>& body_data = i_response.GetData();
+		o_response.SetRequestId(GetRequestId());
+		o_response.SetStatusCode(i_status_code);
+		//o_response.SetData();
+		o_response.build();
 
 #ifdef _DEBUG
+		const std::vector<uint8_t>& body_data = o_response.GetData();
 		testFromBuffer(body_data);
 #endif
-
-		return m_http_request.reply(web::http::status_codes::OK, concurrency::streams::bytestream::open_istream(body_data), body_data.size(), _XPLATSTR("application/ipp"));
 	}
 
 	bool get_valid_string(const variant& i_variant, std::string& o_value)
@@ -1004,7 +1002,7 @@ namespace ipp
 		return ipp::status_codes::successful_ok;
 	}
 
-	template<> int32_t request::to_request(PrintJobRequest& o_req) const
+	template<> int32_t request::to_request_description(PrintJobRequest& o_req) const
 	{
 		PrintJobRequest req;
 
@@ -1173,7 +1171,7 @@ namespace ipp
 		return status_codes::successful_ok;
 	}
 
-	template<> int32_t request::to_request(ValidateJobRequest& o_req) const
+	template<> int32_t request::to_request_description(ValidateJobRequest& o_req) const
 	{
 		ValidateJobRequest req;
 
@@ -1297,7 +1295,7 @@ namespace ipp
 		return status_codes::successful_ok;
 	}
 
-	template<> int32_t request::to_request(GetPrinterAttributesRequest& o_req) const
+	template<> int32_t request::to_request_description(GetPrinterAttributesRequest& o_req) const
 	{
 		GetPrinterAttributesRequest req;
 
@@ -1376,7 +1374,7 @@ namespace ipp
 		return status_codes::successful_ok;
 	}
 
-	template<> int32_t request::to_request(GetJobsRequest& o_req) const
+	template<> int32_t request::to_request_description(GetJobsRequest& o_req) const
 	{
 		GetJobsRequest req;
 
@@ -1460,7 +1458,7 @@ namespace ipp
 		return status_codes::successful_ok;
 	}
 
-	template<> int32_t request::to_request(CancelJobRequest& o_req) const
+	template<> int32_t request::to_request_description(CancelJobRequest& o_req) const
 	{
 		CancelJobRequest req;
 
@@ -1527,7 +1525,7 @@ namespace ipp
 		return status_codes::successful_ok;
 	}
 
-	template<> int32_t request::to_request(GetJobAttributesRequest& o_req) const
+	template<> int32_t request::to_request_description(GetJobAttributesRequest& o_req) const
 	{
 		GetJobAttributesRequest req;
 
