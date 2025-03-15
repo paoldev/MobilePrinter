@@ -57,7 +57,7 @@ where options are
 * -(no-)print-to-raw-printer: directly send the document to the printer queue as raw printer, regardless of the document format.
 * -(no-)manage-ipp-firewall: automatically open and close Firewall inbound private TCP traffic on port 631 for ipp service.
 * -ipp-pool-size=[5,100]: number of threads used by the ipp service (advanced).
-* -log[debug/verbose/default]: enable different log levels.
+* -log=[debug/verbose/default]: enable different log levels.
 
 **NB**: -no-wsprint and -no-ipp can't be declared together (otherwise all printer services will be disabled).
 
@@ -71,7 +71,7 @@ where options are
     -no-print-to-raw-printer
     -no-manage-ipp-firewall
     -ipp-pool-size=5
-    -logdefault
+    -log=default
 
 From your mobile device, you can reference the printer with the following name
 * "\\MYCOMPUTER\MobilePrinter\My Home Printer Name"
