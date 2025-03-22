@@ -911,7 +911,7 @@ std::vector<ipp::variant> ipp_server::get_supported_attribute(const ipp::keyword
 	}
 	else if (imatch(key, "printer-name"))
 	{
-		value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetPrinterName())));
+		value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetUniquePrinterName())));
 	}
 	else if (imatch(key, "printer-uuid"))
 	{

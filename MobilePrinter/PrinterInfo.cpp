@@ -649,13 +649,17 @@ void CPrinterInfo::GenerateUniquePrinterNameAndGuids()
 		m_uniqueprintername += L"\\";
 	}
 	m_uniqueprintername += L"MobilePrinter";
-	if (m_printername.size() != L'\\')
+	if (m_printername.size())
 	{
-		if (m_printername.at(0) != L'\\')
+		m_uniqueprintername += L"\\";
+
+		// Clean-up printer name; however this code preserves printer names such as "\\\\\\\\".
+		std::wstring_view printername(m_printername);
+		if (const size_t slashPos = printername.find_first_not_of(L'\\'); slashPos != std::wstring_view::npos)
 		{
-			m_uniqueprintername += L"\\";
+			printername.remove_prefix(slashPos);
 		}
-		m_uniqueprintername += m_printername;
+		m_uniqueprintername += printername;
 	}
 
 	m_uuid = CreateGuid(m_uniqueprintername.c_str());
