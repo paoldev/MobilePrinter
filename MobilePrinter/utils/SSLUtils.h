@@ -58,7 +58,7 @@ public:
 	};
 
 	CSSLUtils();
-	CSSLUtils(_In_ const CSSLUtils::Config& i_config);
+	CSSLUtils(const CSSLUtils::Config& i_config);
 	~CSSLUtils();
 
 	/// <summary>

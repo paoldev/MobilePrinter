@@ -51,7 +51,7 @@ void LoadFile(const wchar_t* File, std::vector<uint8_t>& o_buffer)
 	if (hFile != INVALID_HANDLE_VALUE)
 	{
 		LARGE_INTEGER fsize{};
-		if (GetFileSizeEx(hFile, &fsize) && ((sizeof(size_t) >= sizeof(LARGE_INTEGER)) || (fsize.HighPart == 0)))
+		if (GetFileSizeEx(hFile, &fsize) && (static_cast<uint64_t>(fsize.QuadPart) <= static_cast<uint64_t>(o_buffer.max_size())))
 		{
 			o_buffer.resize(static_cast<size_t>(fsize.QuadPart));
 
