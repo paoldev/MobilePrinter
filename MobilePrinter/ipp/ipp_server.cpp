@@ -443,53 +443,75 @@ void ipp_server::fill_ipp_error_response(const ipp::request& req, const int32_t 
 	req.build_response(i_status_code, resp, o_ipp_res);
 }
 
-static void dump_collection(const ipp::collection& coll)
+namespace dbg
 {
-	for (auto it2 = coll.begin(); it2 != coll.end(); it2++)
+	static std::string ToString(const ipp::date_time& i_value);
+	static std::string ToString(const ipp::variant& i_value);
+	static std::string ToString(const ipp::collection& i_value);
+	static std::string ToString(const std::vector<ipp::variant>& i_value);
+
+	static std::string ToString(const ipp::date_time& i_value)
 	{
-		LOG("%s", it2->first.c_str());
-		for (size_t i = 0; i < it2->second.size(); i++)
+		std::ostringstream oss;
+		oss << i_value.year << "/" << i_value.month << "/" << i_value.day << ","
+			<< i_value.hour << ":" << i_value.minute << ":" << i_value.second << "." << i_value.millisecond << ","
+			<< (i_value.isPositive ? "+" : "-") << i_value.TZHour << ":" << i_value.TZMinute;
+		return oss.str();
+	};
+
+	static std::string ToString(const ipp::collection& i_value)
 		{
-			const ipp::variant& var = it2->second.at(i);
-			switch (var.GetType())
+		std::ostringstream oss;
+		oss << "{";
+		for (auto& it : i_value)
 			{
-			case ipp::variant::Int32:
-				LOG("\t%d", var.GetInt32());
-				break;
+			oss << "{" << it.first << ": " << ToString(it.second) << "}";
+		}
+		oss << "}";
+		return oss.str();
+	};
 
-			case ipp::variant::Bool:
-				LOG("\t%ls", var.GetBool() ? L"true" : L"false");
-				break;
-
-			case ipp::variant::Int32Range:
-				LOG("\t%d x %d", var.GetRange().first, var.GetRange().second);
-				break;
-
-			case ipp::variant::Resolutions:
-				LOG("\t%d x %d %d", std::get<0>(var.GetResolution()), std::get<1>(var.GetResolution()), std::get<2>(var.GetResolution()));
-				break;
-
-			case ipp::variant::DateTime:
+	static std::string ToString(const std::vector<ipp::variant>& i_values)
+	{
+		std::ostringstream oss;
+		oss << "[";
+		for (auto it2 = i_values.begin(); it2 != i_values.end(); it2++)
+		{
+			oss << ToString(*it2);
+			if ((it2 + 1) != i_values.end())
 			{
-				const ipp::date_time& dt = var.GetDate();
-				LOG("\t%02d/%02d/%04d - %02d:%02d:%02d:%03d", int32_t(dt.day), int32_t(dt.month), int32_t(dt.year), int32_t(dt.hour), int32_t(dt.minute), int32_t(dt.second), int32_t(dt.millisecond));
-			}
-			break;
-
-			case ipp::variant::String:
-				LOG("\t%s", var.GetString().c_str());
-				break;
-
-			case ipp::variant::Collection:
-				dump_collection(var.GetCollection());
-				break;
-
-			default:
-				LOG("\t<Unknown>");
-				break;
+				oss << ", ";
 			}
 		}
+		oss << "]";
+		return oss.str();
+	}
 
+	static std::string ToString(const ipp::variant& i_value)
+	{
+		std::ostringstream oss;
+		switch (i_value.GetType())
+		{
+		case ipp::variant::Uninitialized: break;
+		case ipp::variant::Unsupported: oss << "<unsupported>"; break;
+		case ipp::variant::Unknown: oss << "<unknown>"; break;
+		case ipp::variant::NoValue: oss << "<novalue>"; break;
+			//case ipp::variant::Default: oss << "<default>"; break;
+			//case ipp::variant::NotSettable: oss << "<notsettable>"; break;
+			//case ipp::variant::DeleteAttr: oss << "<deleteattr>"; break;
+			//case ipp::variant::AdminDefine: oss << "<admindefine>"; break;
+		case ipp::variant::Int32: oss << i_value.GetInt32(); break;
+		case ipp::variant::Bool: oss << i_value.GetBool(); break;
+		case ipp::variant::Int32Range: oss << "(" << i_value.GetRange().first << "x" << i_value.GetRange().second << ")"; break;
+		case ipp::variant::Resolutions: oss << "(" << std::get<0>(i_value.GetResolution()) << "x" << std::get<1>(i_value.GetResolution()) << ", " << std::get<2>(i_value.GetResolution()) << ")"; break;
+		case ipp::variant::DateTime: oss << ToString(i_value.GetDate()); break;
+		case ipp::variant::String: oss << i_value.GetString(); break;
+		case ipp::variant::StringWithLanguage: oss << "(" << i_value.GetStringWithLanguage().text() << ", " << i_value.GetStringWithLanguage().language() << ")"; break;
+		case ipp::variant::Collection: oss << ToString(i_value.GetCollection()); break;
+		default: break;
+		}
+
+		return oss.str();
 	}
 }
 
@@ -568,7 +590,7 @@ int32_t ipp_server::on_validate_job(const ipp::ValidateJobRequest& req, ipp::Val
 	DBGLOG2("printer_uri %s\n", req.opAttribs.printer_uri.c_str());
 	DBGLOG2("requesting_user_name %s\n", req.opAttribs.requesting_user_name.c_str());
 	DBGLOG2("job_name %s\n", req.opAttribs.job_name.c_str());
-	DBGLOG2("ipp_attribute_fidelity %s\n", req.opAttribs.ipp_attribute_fidelity ? "true": "false");
+	DBGLOG2("ipp_attribute_fidelity %s\n", req.opAttribs.ipp_attribute_fidelity ? "true" : "false");
 	DBGLOG2("document_name %s\n", req.opAttribs.document_name.c_str());
 	DBGLOG2("compression %s\n", req.opAttribs.compression.c_str());
 	DBGLOG2("document_format %s\n", req.opAttribs.document_format.c_str());
@@ -576,7 +598,6 @@ int32_t ipp_server::on_validate_job(const ipp::ValidateJobRequest& req, ipp::Val
 	DBGLOG2("job_k_octets %d\n", (int)req.opAttribs.job_k_octets);
 	DBGLOG2("job_impressions %d\n", (int)req.opAttribs.job_impressions);
 	DBGLOG2("job_media_sheets %d\n", (int)req.opAttribs.job_media_sheets);
-
 
 	return ipp::status_codes::successful_ok;
 }
@@ -869,8 +890,6 @@ std::vector<ipp::variant> ipp_server::get_supported_attribute(const ipp::keyword
 
 	std::vector<ipp::variant> value;
 
-	DBGLOG("\t%s", key.c_str());
-		
 	if (imatch(key, "ipp-versions-supported"))
 	{
 		value.push_back(variant("1.0"));
@@ -1321,5 +1340,7 @@ std::vector<ipp::variant> ipp_server::get_supported_attribute(const ipp::keyword
 #endif
 	//End "Windows Internet Print Protocol Provider"
 	
+	DBGLOG("\t%s: %s", key.c_str(), dbg::ToString(value).c_str());
+
 	return value;
 }
