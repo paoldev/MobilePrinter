@@ -1,0 +1,34 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="DebugWinHttp" />
+    <BuildType Name="Release" />
+    <BuildType Name="ReleaseWinHttp" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/vcpkg_config/">
+    <File Path="vcpkg_config/check-vcpkg.bat" />
+  </Folder>
+  <Folder Name="/vcpkg_config/manifest/" />
+  <Folder Name="/vcpkg_config/manifest/asio/">
+    <File Path="vcpkg_config/manifest/asio/vcpkg-configuration.json" />
+    <File Path="vcpkg_config/manifest/asio/vcpkg.json" />
+  </Folder>
+  <Folder Name="/vcpkg_config/manifest/winhttp/">
+    <File Path="vcpkg_config/manifest/winhttp/vcpkg-configuration.json" />
+    <File Path="vcpkg_config/manifest/winhttp/vcpkg.json" />
+  </Folder>
+  <Folder Name="/vcpkg_config/scripts/">
+    <File Path="vcpkg_config/scripts/applocal.ps1" />
+    <File Path="vcpkg_config/scripts/vcpkg-general.xml" />
+    <File Path="vcpkg_config/scripts/vcpkg.props" />
+    <File Path="vcpkg_config/scripts/vcpkg.targets" />
+  </Folder>
+  <Project Path="MobilePrinter/MobilePrinter.vcxproj" Id="2925242c-9519-41da-b05c-00aa9c61adfe" />
+</Solution>
