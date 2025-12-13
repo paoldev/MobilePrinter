@@ -128,7 +128,7 @@ namespace ipp
 			auto itGroup = m_ipp_attributes.insert(std::make_pair(group, collection()));
 
 			m_groups_from_request.push_back(group);
-			
+
 			read_attribute_group(itGroup);
 		}
 	}
@@ -147,7 +147,7 @@ namespace ipp
 	void packet::read_attribute(group_it group)
 	{
 		int32_t tag = read1();
-		if (tag ==tags::extension)
+		if (tag == tags::extension)
 		{
 			tag = read4();
 		}
@@ -164,11 +164,11 @@ namespace ipp
 		if ((!isError()) && ((m_position + 2) < m_datasize))
 		{
 			int32_t current = m_data[m_position];
-			return ((current != tags::end_of_attributes_tag) && 
-					(current != tags::endCollection) &&
-					(current != tags::memberAttrName) && 
-					(m_data[m_position + 1] == 0x00) &&
-					(m_data[m_position + 2] == 0x00));
+			return ((current != tags::end_of_attributes_tag) &&
+				(current != tags::endCollection) &&
+				(current != tags::memberAttrName) &&
+				(m_data[m_position + 1] == 0x00) &&
+				(m_data[m_position + 2] == 0x00));
 		}
 		return false;
 	}
@@ -211,53 +211,53 @@ namespace ipp
 			break;
 
 		case tags::rangeOfInteger:
-			{
-				int32_t param1 = read4();
-				int32_t param2 = read4();
-				res.Set(std::make_pair(param1, param2));
-			}
-			break;
+		{
+			int32_t param1 = read4();
+			int32_t param2 = read4();
+			res.Set(std::make_pair(param1, param2));
+		}
+		break;
 
 		case tags::resolution:
-			{
-				int32_t param1 = read4();
-				int32_t param2 = read4();
-				int32_t param3 = read1(); /*== 0x03 ? "dpi" : "dpcm"*/
-				res.Set(std::make_tuple(param1, param2, param3));
-			}
-			break;
+		{
+			int32_t param1 = read4();
+			int32_t param2 = read4();
+			int32_t param3 = read1(); /*== 0x03 ? "dpi" : "dpcm"*/
+			res.Set(std::make_tuple(param1, param2, param3));
+		}
+		break;
 
 		case tags::dateTime:
-			{
-				// http://tools.ietf.org/html/rfc1903 page 17
+		{
+			// http://tools.ietf.org/html/rfc1903 page 17
 
-				date_time date = {};
-				date.year = read2();
-				date.month = read1();
-				date.day = read1();
-				date.hour = read1();
-				date.minute = read1();
-				date.second = read1();
-				date.millisecond = 100 * read1();
-				date.isPositive = (read1() != '-');//?
-				date.TZHour = read1();
-				date.TZMinute = read1();
-				date.TZIsLocal = false;//?
-				date.TZIsPositive = (date.TZHour > 0) ? true : ((date.TZHour < 0) ? false : (date.TZMinute >= 0));	//?
-				res.Set(date);
-			}
-			break;
+			date_time date = {};
+			date.year = read2();
+			date.month = read1();
+			date.day = read1();
+			date.hour = read1();
+			date.minute = read1();
+			date.second = read1();
+			date.millisecond = 100 * read1();
+			date.isPositive = (read1() != '-');//?
+			date.TZHour = read1();
+			date.TZMinute = read1();
+			date.TZIsLocal = false;//?
+			date.TZIsPositive = (date.TZHour > 0) ? true : ((date.TZHour < 0) ? false : (date.TZMinute >= 0));	//?
+			res.Set(date);
+		}
+		break;
 
 		case tags::textWithLanguage:
 		case tags::nameWithLanguage:
-			{
-				int32_t languageLen = read2();
-				std::string language = read(languageLen);
-				int32_t textLen = read2();
-				std::string text = read(textLen);
-				res.Set(text, language);
-			}
-			break;
+		{
+			int32_t languageLen = read2();
+			std::string language = read(languageLen);
+			int32_t textLen = read2();
+			std::string text = read(textLen);
+			res.Set(text, language);
+		}
+		break;
 
 		case tags::nameWithoutLanguage:
 		case tags::textWithoutLanguage:
@@ -621,47 +621,47 @@ namespace ipp
 			break;
 
 		case variant::DateTime:
-			{
-				const date_time& dt = value.GetDate();
-				write2(dt.year);
-				write1(dt.month);
-				write1(dt.day);
-				write1(dt.hour);
-				write1(dt.minute);
-				write1(dt.second);
-				write1(dt.millisecond / 100);
-				write1(!dt.isPositive ? '-' : '+');
-				write1(dt.TZHour);
-				write1(dt.TZMinute);
-			}
-			break;
+		{
+			const date_time& dt = value.GetDate();
+			write2(dt.year);
+			write1(dt.month);
+			write1(dt.day);
+			write1(dt.hour);
+			write1(dt.minute);
+			write1(dt.second);
+			write1(dt.millisecond / 100);
+			write1(!dt.isPositive ? '-' : '+');
+			write1(dt.TZHour);
+			write1(dt.TZMinute);
+		}
+		break;
 
 		case variant::String:
+		{
+			const std::string& s = value.GetString();
+			switch (tag)
 			{
-				const std::string& s = value.GetString();
-				switch (tag)
-				{
-				case tags::nameWithoutLanguage:
-				case tags::textWithoutLanguage:
-				case tags::octetString:
-				case tags::memberAttrName:
-					write(s.c_str(), static_cast<int32_t>(s.size()), false);
-					break;
+			case tags::nameWithoutLanguage:
+			case tags::textWithoutLanguage:
+			case tags::octetString:
+			case tags::memberAttrName:
+				write(s.c_str(), static_cast<int32_t>(s.size()), false);
+				break;
 
-				case tags::keyword:
-				case tags::uri:
-				case tags::uriScheme:
-				case tags::charset:
-				case tags::naturalLanguage:
-				case tags::mimeMediaType:
-					write(s.c_str(), static_cast<int32_t>(s.size()), false, "ascii");
-					break;
+			case tags::keyword:
+			case tags::uri:
+			case tags::uriScheme:
+			case tags::charset:
+			case tags::naturalLanguage:
+			case tags::mimeMediaType:
+				write(s.c_str(), static_cast<int32_t>(s.size()), false, "ascii");
+				break;
 
-				default:
-					assert(0);
-				}
+			default:
+				assert(0);
 			}
-			break;
+		}
+		break;
 
 		case variant::StringWithLanguage:
 		{
@@ -683,36 +683,36 @@ namespace ipp
 		break;
 
 		case variant::Collection:
+		{
+			const auto& collect = value.GetCollection();
+			for (auto it = collect.cbegin(); it != collect.cend(); it++)
 			{
-				const auto& collect = value.GetCollection();
-				for (auto it = collect.cbegin(); it != collect.cend(); it++)
+				if (it->second.size())
 				{
-					if (it->second.size())
+					write1(tags::memberAttrName);
+					write2(0);	//name-length
+					write(it->first, true);
+					int32_t tag2 = todo_tag(it->first, it->second.at(0));
+					//All values are saved as additional values, ignoring the passed name.
+					for (size_t i = 0; i < it->second.size(); i++)
 					{
-						write1(tags::memberAttrName);
-						write2(0);	//name-length
-						write(it->first, true);
-						int32_t tag2 = todo_tag(it->first, it->second.at(0));
-						//All values are saved as additional values, ignoring the passed name.
-						for (size_t i = 0; i < it->second.size(); i++)
-						{
-							write_new_array_value(tag2, it->first, it->second.at(i));
-						}
+						write_new_array_value(tag2, it->first, it->second.at(i));
 					}
 				}
-				write1(tags::endCollection);
-				write2(0);	//end-name-length
-				write2(0);	//end-value-length
 			}
-			break;
+			write1(tags::endCollection);
+			write2(0);	//end-name-length
+			write2(0);	//end-value-length
+		}
+		break;
 
 		case variant::Unsupported:
 		case variant::Unknown:
 		case variant::NoValue:
-		//case variant::Default:
-		//case variant::NotSettable:
-		//case variant::DeleteAttr:
-		//case variant::AdminDefine:
+			//case variant::Default:
+			//case variant::NotSettable:
+			//case variant::DeleteAttr:
+			//case variant::AdminDefine:
 			break;
 
 		default:
@@ -732,7 +732,7 @@ namespace ipp
 	{
 		SetVersion(1, 1);
 	}
-	
+
 	template<typename T>
 	void add_operation_attributes(const T& i_operation_attribs, response& o_response)
 	{
@@ -799,7 +799,7 @@ namespace ipp
 	template<> void request::build_response(const int32_t i_status_code, const PrintJobResponse& i_responseDesc, response& o_response) const
 	{
 		o_response = {};
-		
+
 		add_operation_attributes(i_responseDesc.opAttribs, o_response);
 		add_unsupported_attributes(i_status_code, i_responseDesc.unsupportedAttribs, o_response);
 
@@ -965,7 +965,7 @@ namespace ipp
 		{
 			return get_valid_string(itAttr->second.at(0), o_value);
 		}
-		
+
 		return false;
 	}
 
@@ -1414,7 +1414,7 @@ namespace ipp
 				{
 					req.opAttribs.which_jobs = "not-completed";
 				}
-				
+
 				if (!get_valid_boolean(itOp->second, "my-jobs", req.opAttribs.my_jobs))
 				{
 					req.opAttribs.my_jobs = false;
@@ -1506,13 +1506,13 @@ namespace ipp
 						req.opAttribs.job_id = tmpInt;
 					}
 				}
-				
+
 				if (!get_valid_string(itOp->second, "requesting-user-name", req.opAttribs.requesting_user_name))
 				{
 				}
 				if (!get_valid_string(itOp->second, "message", req.opAttribs.message))
 				{
-					
+
 				}
 			}
 			else
