@@ -2,14 +2,14 @@
 #include "PrinterInfo.h"
 #include "PrinterJobs.h"
 
-CPrinterInfo* CPrinterInfo::Create(const wchar_t* pPrinterName)
+CPrinterInfo* CPrinterInfo::Create(const wchar_t* i_pPrinterName)
 {
 	CPrinterInfo* pPrinter = new CPrinterInfo();
 	if (pPrinter != nullptr)
 	{
-		if (!pPrinter->Init(pPrinterName))
+		if (!pPrinter->Init(i_pPrinterName))
 		{
-			ELOG("Error initializing printer %ls", pPrinterName);
+			ELOG("Error initializing printer %ls", i_pPrinterName);
 			pPrinter->Release();
 			pPrinter = nullptr;
 		}
@@ -365,9 +365,9 @@ void* CPrinterInfo::GetMonitorInfo(HANDLE i_hPrinter, const int32_t i_iLevel)
 	return nullptr;
 }
 
-bool CPrinterInfo::Init(const wchar_t* pPrinterName)
+bool CPrinterInfo::Init(const wchar_t* i_pPrinterName)
 {
-	if (pPrinterName == nullptr)
+	if (i_pPrinterName == nullptr)
 	{
 		ELOG("Unknown printer");
 		return false;
@@ -376,11 +376,11 @@ bool CPrinterInfo::Init(const wchar_t* pPrinterName)
 	m_pPrinterJobs = CPrinterJobs::Create();
 	if (m_pPrinterJobs == nullptr)
 	{
-		ELOG("Error initializing printer jobs queue for printer %ls", pPrinterName);
+		ELOG("Error initializing printer jobs queue for printer %ls", i_pPrinterName);
 		return false;
 	}
 
-	m_printername = pPrinterName;
+	m_printername = i_pPrinterName;
 
 	GetProperty(DC_PAPERS, m_papers);
 	GetProperty(DC_PAPERSIZE, m_papersize);
@@ -397,31 +397,31 @@ bool CPrinterInfo::Init(const wchar_t* pPrinterName)
 	GetProperty(DC_MANUFACTURER, m_manufacturer);
 	GetProperty(DC_MODEL, m_model);
 	
-	m_bDuplex = DeviceCapabilities(pPrinterName, nullptr, DC_DUPLEX, nullptr, nullptr) != 0;
-	m_bCollate = DeviceCapabilities(pPrinterName, nullptr, DC_COLLATE, nullptr, nullptr) != 0;
-	m_bStaple = DeviceCapabilities(pPrinterName, nullptr, DC_STAPLE, nullptr, nullptr) != 0;
-	m_bColorDevice = DeviceCapabilities(pPrinterName, nullptr, DC_COLORDEVICE, nullptr, nullptr) != 0;
+	m_bDuplex = DeviceCapabilities(i_pPrinterName, nullptr, DC_DUPLEX, nullptr, nullptr) != 0;
+	m_bCollate = DeviceCapabilities(i_pPrinterName, nullptr, DC_COLLATE, nullptr, nullptr) != 0;
+	m_bStaple = DeviceCapabilities(i_pPrinterName, nullptr, DC_STAPLE, nullptr, nullptr) != 0;
+	m_bColorDevice = DeviceCapabilities(i_pPrinterName, nullptr, DC_COLORDEVICE, nullptr, nullptr) != 0;
 
-	m_uiFields = DeviceCapabilities(pPrinterName, nullptr, DC_FIELDS, nullptr, nullptr);
-	m_uiDevModeSize = DeviceCapabilities(pPrinterName, nullptr, DC_SIZE, nullptr, nullptr);
-	m_uiExtraDriver = DeviceCapabilities(pPrinterName, nullptr, DC_EXTRA, nullptr, nullptr);
-	m_uiVersion = DeviceCapabilities(pPrinterName, nullptr, DC_VERSION, nullptr, nullptr);
-	m_uiDriver = DeviceCapabilities(pPrinterName, nullptr, DC_DRIVER, nullptr, nullptr);
-	m_uiTrueTypeBitmask = DeviceCapabilities(pPrinterName, nullptr, DC_TRUETYPE, nullptr, nullptr);
-	m_uiOrientation = DeviceCapabilities(pPrinterName, nullptr, DC_ORIENTATION, nullptr, nullptr);
-	m_uiNumCopies = DeviceCapabilities(pPrinterName, nullptr, DC_COPIES, nullptr, nullptr);
-	m_uiPrintRate = DeviceCapabilities(pPrinterName, nullptr, DC_PRINTRATE, nullptr, nullptr);
-	m_uiPrintRateUnit = DeviceCapabilities(pPrinterName, nullptr, DC_PRINTRATEUNIT, nullptr, nullptr);
-	m_uiPrinterMemInKB = DeviceCapabilities(pPrinterName, nullptr, DC_PRINTERMEM, nullptr, nullptr);
-	m_uiPrintRatePagePerMinute = DeviceCapabilities(pPrinterName, nullptr, DC_PRINTRATEPPM, nullptr, nullptr);
+	m_uiFields = DeviceCapabilities(i_pPrinterName, nullptr, DC_FIELDS, nullptr, nullptr);
+	m_uiDevModeSize = DeviceCapabilities(i_pPrinterName, nullptr, DC_SIZE, nullptr, nullptr);
+	m_uiExtraDriver = DeviceCapabilities(i_pPrinterName, nullptr, DC_EXTRA, nullptr, nullptr);
+	m_uiVersion = DeviceCapabilities(i_pPrinterName, nullptr, DC_VERSION, nullptr, nullptr);
+	m_uiDriver = DeviceCapabilities(i_pPrinterName, nullptr, DC_DRIVER, nullptr, nullptr);
+	m_uiTrueTypeBitmask = DeviceCapabilities(i_pPrinterName, nullptr, DC_TRUETYPE, nullptr, nullptr);
+	m_uiOrientation = DeviceCapabilities(i_pPrinterName, nullptr, DC_ORIENTATION, nullptr, nullptr);
+	m_uiNumCopies = DeviceCapabilities(i_pPrinterName, nullptr, DC_COPIES, nullptr, nullptr);
+	m_uiPrintRate = DeviceCapabilities(i_pPrinterName, nullptr, DC_PRINTRATE, nullptr, nullptr);
+	m_uiPrintRateUnit = DeviceCapabilities(i_pPrinterName, nullptr, DC_PRINTRATEUNIT, nullptr, nullptr);
+	m_uiPrinterMemInKB = DeviceCapabilities(i_pPrinterName, nullptr, DC_PRINTERMEM, nullptr, nullptr);
+	m_uiPrintRatePagePerMinute = DeviceCapabilities(i_pPrinterName, nullptr, DC_PRINTRATEPPM, nullptr, nullptr);
 
 	//Old: Win95
-	//m_uiBinAdjust = DeviceCapabilities(pPrinterName, nullptr, DC_BINADJUST, nullptr, nullptr);
+	//m_uiBinAdjust = DeviceCapabilities(i_pPrinterName, nullptr, DC_BINADJUST, nullptr, nullptr);
 	//DC_EMF_COMPLIANT
 	//DC_DATATYPE_PRODUCED
 
-	uint32_t uiMinExtent = DeviceCapabilities(pPrinterName, nullptr, DC_MINEXTENT, nullptr, nullptr);
-	uint32_t uiMaxExtent = DeviceCapabilities(pPrinterName, nullptr, DC_MAXEXTENT, nullptr, nullptr);
+	uint32_t uiMinExtent = DeviceCapabilities(i_pPrinterName, nullptr, DC_MINEXTENT, nullptr, nullptr);
+	uint32_t uiMaxExtent = DeviceCapabilities(i_pPrinterName, nullptr, DC_MAXEXTENT, nullptr, nullptr);
 	m_minextent = std::make_pair(uiMinExtent & 0xFFFF, uiMinExtent >> 16);
 	m_maxextent = std::make_pair(uiMaxExtent & 0xFFFF, uiMaxExtent >> 16);
 
@@ -430,11 +430,11 @@ bool CPrinterInfo::Init(const wchar_t* pPrinterName)
 	{
 		cbNeeded = sizeof(m_printer1);
 		cbReturned = 0;
-		//EnumPrintersW(PRINTER_ENUM_NAME, (LPWSTR)pPrinterName, 1, (LPBYTE)&m_printer1, sizeof(m_printer1), &cbNeeded, &cbReturned);
+		//EnumPrintersW(PRINTER_ENUM_NAME, (LPWSTR)i_pPrinterName, 1, (LPBYTE)&m_printer1, sizeof(m_printer1), &cbNeeded, &cbReturned);
 	}
 
 	bool res = false;
-	if (OpenPrinter((LPWSTR)pPrinterName, &m_hPrinter, nullptr))
+	if (OpenPrinter((LPWSTR)i_pPrinterName, &m_hPrinter, nullptr))
 	{
 		res = true;
 
@@ -522,30 +522,40 @@ bool CPrinterInfo::Init(const wchar_t* pPrinterName)
 	}
 
 #define UPDATE_PRINTER_STRING(field, structname, var)	\
-if (field.empty() && structname)	\
+if (field.empty() && structname && structname->var && structname->var[0])	\
 {	\
-	if (structname->var != nullptr)	\
-	{	\
-		field = structname->var;	\
-	}	\
+	field = structname->var;	\
 }
 
+#define UPDATE_PRINTER_STRING2(field, structname, var, structname2, var2)	\
+	UPDATE_PRINTER_STRING(field, structname, var) else UPDATE_PRINTER_STRING(field, structname2, var2)
+
+#define UPDATE_PRINTER_STRING3(field, structname, var, structname2, var2, structname3, var3)	\
+	UPDATE_PRINTER_STRING2(field, structname, var, structname2, var2) else UPDATE_PRINTER_STRING(field, structname3, var3)
+
 	UPDATE_PRINTER_STRING(m_model, m_driver2, pName);
-	UPDATE_PRINTER_STRING(m_printerinfo, m_printer2, pComment);
-	UPDATE_PRINTER_STRING(m_printerlocation, m_printer2, pLocation);
+	UPDATE_PRINTER_STRING3(m_printerinfo, m_printer1, pComment, m_printer1, pDescription, m_driver2, pName);
+	UPDATE_PRINTER_STRING3(m_printerlocation, m_printer2, pLocation, m_printer2, pPrinterName, m_printer2, pServerName);
 	UPDATE_PRINTER_STRING(m_manufacturer, m_driver6, pszMfgName);
 	UPDATE_PRINTER_STRING(m_url, m_driver6, pszOEMUrl);
 	UPDATE_PRINTER_STRING(m_hardwareid, m_driver6, pszHardwareID);
 
+#undef UPDATE_PRINTER_STRING3
+#undef UPDATE_PRINTER_STRING2
 #undef UPDATE_PRINTER_STRING
 
 	GenerateUniquePrinterNameAndGuids();
 
-	m_commandset = L"PJL,PCL,POSTSCRIPT"; //TODO
+	m_commandset = L"application/pdf,application/vnd.ms-xpsdocument"; //TODO
 
-	m_deviceid = L"MFG:" + m_manufacturer + L";MDL:" + m_model + L";CLS:Printer";
-	m_deviceid += L";CID:MyPrinter";		//TODO
-	m_deviceid += L";CMD:" + m_commandset;
+	// This string shouldn't be longer than 255 chars.
+	m_deviceid = L"MFG:" + m_manufacturer + L";";
+	m_deviceid += L"MDL:" + m_model + L";";
+	m_deviceid += L"DES:" + m_printerinfo + L";";
+	m_deviceid += L"CLS:Printer;";
+	// TODO: Use CID values from https://learn.microsoft.com/en-us/windows-hardware/drivers/print/v4-driver-setup-concepts?
+	m_deviceid += L"CID:MyPrinter;";	//TODO
+	m_deviceid += L"CMD:" + m_commandset + L";";
 
 	return res;
 }

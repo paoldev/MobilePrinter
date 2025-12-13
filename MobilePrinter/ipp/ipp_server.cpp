@@ -15,6 +15,8 @@
 //100-continue not supported till cpprestsdk 2.10.13
 //#define ENABLE_100_CONTINUE
 
+static const std::wstring IPP_DEFAULT_PATH(L"/ipp/print");
+
 namespace ipp
 {
 	template<int OP> struct operation_traits {};
@@ -70,6 +72,7 @@ ipp_server::ipp_server(const std::string& i_host, const int32_t i_port, const co
 		.set_scheme(i_config.is_ssl_enabled() ? _XPLATSTR("https") : _XPLATSTR("http"))
 		.set_host(utility::conversions::to_string_t(i_host))
 		.set_port(i_port)
+		//.set_path(IPP_DEFAULT_PATH)	//Don't set the "path" here in order to receive all requests under "/" root.
 		.to_uri();
 	m_uri = utility::conversions::to_utf8string(ippuri.to_string());
 
@@ -81,7 +84,7 @@ ipp_server::ipp_server(const std::string& i_host, const int32_t i_port, const co
 	{
 		m_server.reset();
 	}
-	
+
 	if (!m_server)
 	{
 		m_uri.clear();
@@ -124,7 +127,7 @@ void ipp_server::register_operation(Func i_callback)
 		const typename ipp::operation_traits<OPERATION>::request& req = *static_cast<const typename ipp::operation_traits<OPERATION>::request*>(p1);
 		typename ipp::operation_traits<OPERATION>::response& resp = *static_cast<typename ipp::operation_traits<OPERATION>::response*>(p2);
 		return func(req, resp);
-	};
+		};
 }
 
 void ipp_server::init()
@@ -229,7 +232,7 @@ Concurrency::task<void> ipp_server::validate_and_process_request(const web::http
 	utility::string_t name;
 	if (result == web::http::status_codes::OK)
 	{
-		if (req.request_uri().to_string().compare(_XPLATSTR("/ipp/print")) != 0)
+		if (req.request_uri().to_string().compare(IPP_DEFAULT_PATH) != 0)
 		{
 			result = web::http::status_codes::BadRequest;
 		}
@@ -277,7 +280,7 @@ Concurrency::task<void> ipp_server::validate_and_process_request(const web::http
 			}
 		}
 	}
-	
+
 	if ((result != web::http::status_codes::OK) && (result != web::http::status_codes::Continue))
 	{
 		return req.reply(result);
@@ -294,34 +297,34 @@ Concurrency::task<void> ipp_server::on_ipp_post_request(const web::http::http_re
 {
 	//return req.extract_vector().then([req, this](const std::vector<unsigned char>& body)	//required to ignore exceptions from extract_vector: if thrown, this lambda is never called.
 	return req.extract_vector().then([req, this](Concurrency::task<std::vector<unsigned char>> r_task)	//required to intercept exceptions from extract_vector: this lambda is always called.
-	{
-		std::vector<unsigned char> body;
-		try
 		{
-			body = r_task.get();
-		}
-		catch (...)
-		{
-		}
-
-		ipp::response response;
-		if (process_ipp_request(body, response))
-		{
-			const std::vector<uint8_t>& content = response.GetData();
-			if (content.empty())
+			std::vector<unsigned char> body;
+			try
 			{
-				return req.reply(web::http::status_codes::InternalError);
+				body = r_task.get();
+			}
+			catch (...)
+			{
+			}
+
+			ipp::response response;
+			if (process_ipp_request(body, response))
+			{
+				const std::vector<uint8_t>& content = response.GetData();
+				if (content.empty())
+				{
+					return req.reply(web::http::status_codes::InternalError);
+				}
+				else
+				{
+					return req.reply(web::http::status_codes::OK, concurrency::streams::bytestream::open_istream(content), content.size(), _XPLATSTR("application/ipp"));
+				}
 			}
 			else
 			{
-				return req.reply(web::http::status_codes::OK, concurrency::streams::bytestream::open_istream(content), content.size(), _XPLATSTR("application/ipp"));
+				return req.reply(web::http::status_codes::BadRequest);
 			}
-		}
-		else
-		{
-			return req.reply(web::http::status_codes::BadRequest);
-		}
-	});
+		});
 }
 
 bool ipp_server::process_ipp_request(const std::span<const uint8_t>& i_ipp_request, ipp::response& o_ipp_res) const
@@ -425,12 +428,12 @@ bool ipp_server::process_ipp_request(const std::span<const uint8_t>& i_ipp_reque
 			break;
 		}
 	}
-	
+
 	if (status_code != ipp::status_codes::successful_ok)
 	{
 		fill_ipp_error_response(ippPacket, status_code, o_ipp_res);
 	}
-	
+
 	return true;
 }
 
@@ -460,11 +463,11 @@ namespace dbg
 	};
 
 	static std::string ToString(const ipp::collection& i_value)
-		{
+	{
 		std::ostringstream oss;
 		oss << "{";
 		for (auto& it : i_value)
-			{
+		{
 			oss << "{" << it.first << ": " << ToString(it.second) << "}";
 		}
 		oss << "}";
@@ -773,7 +776,7 @@ int32_t ipp_server::on_get_jobs(const ipp::GetJobsRequest& req, ipp::GetJobsResp
 		}
 
 		auto& job = *allJobs[j];
-		
+
 		if (is_requested_job(req.opAttribs, job))
 		{
 			bool bAddJob = false;
@@ -921,11 +924,25 @@ std::vector<ipp::variant> ipp_server::get_supported_attribute(const ipp::keyword
 	}
 	else if (imatch(key, "printer-location"))
 	{
-		value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetPrinterLocation())));
+		if (m_PrinterInfo->GetPrinterLocation().empty())
+		{
+			value.push_back(variant("<undefined>"));
+		}
+		else
+		{
+			value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetPrinterLocation())));
+		}
 	}
 	else if (imatch(key, "printer-info"))
 	{
-		value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetPrinterInfo())));
+		if (m_PrinterInfo->GetPrinterInfo().empty())
+		{
+			value.push_back(variant("<undefined>"));
+		}
+		else
+		{
+			value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetPrinterInfo())));
+		}
 	}
 	else if (imatch(key, "printer-icons"))
 	{
@@ -1005,7 +1022,7 @@ std::vector<ipp::variant> ipp_server::get_supported_attribute(const ipp::keyword
 		coll["media-top-margin"].push_back(variant(DEFAULT_MARGIN));
 		coll["media-bottom-margin"].push_back(variant(DEFAULT_MARGIN));
 		coll["media-size-name"].push_back(variant(media_size_name.c_str()));
-		
+
 		media_key = media_size_name;
 #if IPP_SUPPORTS_2_0
 		coll["media-source"].push_back(variant(KEYWORD_MediaSource_Main));
@@ -1158,17 +1175,17 @@ std::vector<ipp::variant> ipp_server::get_supported_attribute(const ipp::keyword
 	else if (imatch(key, "printer-output-tray"))
 	{
 #if IPP_SUPPORTS_2_0
-	//new
-	//Mandatory if "output-bin" is supported
-	//value.push_back(variant(KEYWORD_OutputBin_FaceDown));
+		//new
+		//Mandatory if "output-bin" is supported
+		//value.push_back(variant(KEYWORD_OutputBin_FaceDown));
 #endif
 	}
 	else if (imatch(key, "printer-input-tray"))
 	{
 #if IPP_SUPPORTS_2_0
-	//new
-	//Mandatory if media-source or media-source-properties are supported
-	//value.push_back(variant(...));
+		//new
+		//Mandatory if media-source or media-source-properties are supported
+		//value.push_back(variant(...));
 #endif
 	}
 	else if (imatch(key, "printer-dns-sd-name"))
@@ -1204,7 +1221,8 @@ std::vector<ipp::variant> ipp_server::get_supported_attribute(const ipp::keyword
 	}
 	else if (imatch(key, "printer-device-id"))
 	{
-		value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetCommandSet/*GetDeviceId*/())));
+		//value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetCommandSet())));
+		value.push_back(variant(wchar_to_utf8(m_PrinterInfo->GetDeviceId())));
 	}
 	else if (imatch(key, "epcl-version-supported"))
 	{
@@ -1339,7 +1357,7 @@ std::vector<ipp::variant> ipp_server::get_supported_attribute(const ipp::keyword
 	}
 #endif
 	//End "Windows Internet Print Protocol Provider"
-	
+
 	DBGLOG("\t%s: %s", key.c_str(), dbg::ToString(value).c_str());
 
 	return value;
