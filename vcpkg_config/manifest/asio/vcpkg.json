@@ -1,7 +1,7 @@
 {
   "name": "mobileprinter",
   "version-string": "0.1",
-  "builtin-baseline": "670f6dddaafc59c5dfe0587a130d59a35c48ea38",
+  "builtin-baseline": "cfcbdb245f1179a5a493890a0b69531d66969e62",
   "dependencies": [
     {
       "name": "cpprestsdk",
