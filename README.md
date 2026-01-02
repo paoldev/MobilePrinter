@@ -2,6 +2,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE.txt)
 
+MobilePrinter (c) 2015-2026 paoldev  
+  
 **MobilePrinter** is an hobbystic project to print simple documents and images from Windows 10 Mobile phone and Android devices to an USB printer, which doesn't expose any mobile-compatible printer service on LAN.
   
 It's a merge of a couple of programs I wrote in 2015-2020, so it's written with mixed coding styles.  
